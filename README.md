@@ -7,29 +7,45 @@ Help
 ----
 
 ```
-[***] Genuine Package Manager [genetic (16.x.x)].
+[(·)] Genuine 'GNU/Linux' Genuine Package Manager
 
-[***] Usage: genetic --option1 --option2 'args' ... --command|-c 'file'
+[(·)] Usage: genetic --option1 --option2 'args' ... --command|-c 'file'
 
-[***] Commands:
+[(·)] Commands:
 
 	[-h] --help
-	[-v] --version
+	[-V] --version
+	[-p] --print-architecture
 
-[***] Options:
+[(·)] Options:
 
 	     --admindir   'directory'
 	     --color
 	     --verbose
+	     --silent
 	     --force
 	[-R] --rebuildb
 
-[***] Source Development Commands:
+[(·)] Repositories:
+
+	[-r] --repo
+	     --update
+
+[(·)] Bootstrap Genuine System:
+
+	[-B] --bootstrap
+
+[(·)] Install Genuine System:
+
+	[-I] --installer
+
+[(·)] Source Development Commands:
 
 	     --noarch     '(Create <noarch> package)'
 	     --autotools
 	     --prefix     'directory'
 	     --configure  '--with --enable'
+	     --configure-self-dir
 	     --packages   'package1 package2'
 	[-s] --source     'source.tar.<gz|bz2|xz>'
 
@@ -38,12 +54,16 @@ Help
 	     --disable-gen-orig
 	     --disable-gen-source
 	     --disable-gen-debug
-	     --disable-gen-all
-	[-b] --build      'SrcInfo'
+	[-d] --disable-gen-all
+	[-b] --build
 
-	[-c] --clean      'SrcInfo'
+	[-C] --disable-clean
+	[-D] --disable-distclean
+	[-c] --clean
 
-[***] Package Management Commands:
+	[-P] --packagepool-clean
+
+[(·)] Package Management Commands:
 
 	     --noscripts  (Ignore 'PostInst' & 'PreInst' scripts)
 	     --instdir    'directory'
@@ -55,12 +75,12 @@ Help
 	[-u] --uninstall  'package.<dbg|dev>'
 
 	[-l] --list       'pattern'
+	[-L] --listfiles  'pattern'
 
 	     --unpackdir  'directory'
 	[-U] --unpack     'package-version.<arch|dev|doc|dbg|src>.gen'
 
-[***] Try 'man genetic.(1)' for more information.
-
+[(·)] Try 'man genetic.(1)' for more information.
 ```
 
 ==============
