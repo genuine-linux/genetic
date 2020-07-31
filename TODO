@@ -1,0 +1,19 @@
+### GENETIC TODO ###
+
+- Fix Perl Modules (libgenetic-packager, libgenetic-install, libgenetic-uninstall).
+
+- More & more fixes!
+
+
+### FIXED ###
+
+- Fix Info file generation (libgenetic-packager).
+- Separate /usr/share/doc/$name-$version into a .doc.gen package (libgenetic-build, libgenetic-packager, libgenetic-install).
+- Added PostRemv & PreRemv scripts (libgenetic-source, libgenetic-uninstall, libgenetic-packager).
+- Purge installed sysconfig files (libgenetic-uninstall).
+- Fix find /include/ on devel packages (libgenetic-packager).
+- Remove /usr/share/info/dir, and regenerate it (libgenetic-packager, libgenetic-install, libgenetic-uninstall).
+- Fix genetic package database rebuild (libgenetic-install, libgenetic-uninstall).
+- Prevent uninstalling old kernel files on updates (libgenetic-install).
+- Preserve "/etc" configuration files, install new files as "/etc/file.new" (libgenetic-packager, libgenetic-install, libgenetic-build).
+- Compress man pages. (libgenetic-build, libgenetic-packager).

@@ -1,0 +1,578 @@
+#!/bin/bash
+
+# @PACKAGE@-@VERSION@ (libgenetic-source) #
+
+# Copyright (c) 2014-2019 Antonio Cao (@burzumishi) #
+
+# This is free software;
+# You have unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# libgenetic-source.la: Package Manager Source functions and definitions #
+
+# Undefined variables # Will be defined later if a 'Makefile' is found #
+GEN_PKGRULES_VARPREFIX="";
+
+# gen_source_package($PACKAGE,$packages_to_generate): Generate source gen package from original source tarball. Create binary package from source tarball.  #
+gen_source_package() {
+	# Parameters: $PACKAGE_PATH #
+	PACKAGE_PATH="$1";
+
+	packages_to_generate="$PACKAGES_TO_GENERATE";
+
+	echolog_debug "$DEBUG ================== %%% genetic %%% ==================";
+	echolog_debug "$DEBUG Starting 'gen_source_package($PACKAGE_PATH)'!";
+	echolog_debug "$DEBUG =====================================================";
+
+	# Check if package exists
+	package_check "$PACKAGE_PATH";
+
+	# Define '$PACKAGE' to be installed #
+	PACKAGE=$($ECHO $PACKAGE_PATH | $AWK -F"/" '{print $NF}');
+
+	# Check package type
+	get_package_type "$PACKAGE";
+
+	### Setting up package name ###
+	echologn_debug "$DEBUG Splitting '$PACKAGE' name file into ...";
+	check_package_name=$($ECHO $PACKAGE | $AWK -F"/" '{print $NF}' | $SED 's/.tar.'$TYPE'//g');
+	package_version=$($ECHO "$check_package_name" | $AWK -F"-" '{print $NF}');
+	package_name=$($ECHO "$check_package_name" | $SED 's/-'$package_version'//g');
+	echolog_debug_nodate " '$package_name $package_version'.";
+
+	### Check how many packages will be generated from this source #
+	# If $packages_to_generate are not required #
+	if test -z "$packages_to_generate"; then
+		# Setup $packages_to_generate to $package_name #
+		packages_to_generate="$package_name";
+	fi;
+
+	# Check packages to be built from this source #
+	packages_in_source="$($ECHO "$packages_to_generate" | $WC -l)";
+	if test $packages_in_source -eq 1; then
+		echolog_debug_verbose "$DEBUG This source can build package: '$packages_to_generate'";
+	else
+		echolog_debug_verbose "$DEBUG This source can build '#$packages_in_source' packages: '$packages_to_generate'";
+	fi;
+
+	# Delete old directory #
+	check_dir "$GENETIC_TMP/$package_name-$package_version" "$RM -rf $GENETIC_TMP/$package_name-$package_version";
+
+	### Extract package into temporary directory ###
+	genextract "$EXTRACT" "$PACKAGE_PATH" "$GENETIC_TMP/$package_name-$package_version";
+
+	### Check that $extracted_package directory matches '$package_name-$package_version' ###
+	echolog_debug_verbose "$DEBUG Check that extracted package directory matches '$package_name-$package_version'";
+	extracted_package=$($LS $GENETIC_TMP/$package_name-$package_version | $GREP "$package_name" | $HEAD -1)
+
+	# Load $extracted_package_name-$extracted_package_version #
+	extracted_package_version=$($ECHO "$extracted_package" | $AWK -F"-" '{print $NF}');
+	extracted_package_name=$($ECHO "$extracted_package" | $SED 's/-'$extracted_package_version'//g');
+
+	# Checking $package_name-$package_version == $extracted_package_name-$extracted_package_version #
+	if test "$package_name-$package_version" == "$extracted_package_name-$extracted_package_version"; then
+		echolog_debug_verbose "$DEBUG Extracted '$extracted_package_name-$extracted_package_version' matches '$package_name-$package_version'.";
+	else
+		echolog_debug "$DEBUG Extracted '$extracted_package_name-$extracted_package_version' does not match '$package_name-$package_version'!";
+		# Rename '$extracted_package_name-$extracted_package_version' to '$package_name-$package_version' #
+		echolog_debug_verbose "$DEBUG Renaming '$extracted_package_name-$extracted_package_version' to '$package_name-$package_version'!";
+		$MV $GENETIC_TMP/$package_name-$package_version/$extracted_package_name-$extracted_package_version $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+	fi;
+
+	### Gather '$package_name $package_version' info from package sources ###
+	echolog_debug_verbose "$DEBUG Gather '$package_name $package_version' info from package sources.";
+
+	$CD $GENETIC_TMP/$package_name-$package_version;
+
+	### Trying to find DESTDIR or PREFIX in Makefile ###
+	echolog_debug_verbose "$DEBUG Check source 'Makefile' to find <DESTDIR> or <PREFIX>.";
+
+	# Define $TEMP_MAKEFILE: by default is in sources root #
+	TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/Makefile";
+
+	# Execute configure to create Makefile
+	if [ -f "$package_name-$package_version/configure" ]; then
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' 'configure' script!";
+
+		# GNU Autotools #
+		if test "$ENABLE_AUTOTOOLS" == "yes"; then
+			echolog_debug_verbose "$DEBUG Use of 'GNU Autotools' activated!";
+
+			if test -f "$package_name-$package_version/configure.ac"; then
+				# Installed GNU Autotools Autoconf version #
+				AUTOCONF_VERSION=$($AUTOCONF --version | $HEAD -1 | $AWK '{print $NF}');
+
+				# Checking configure.ac Autoconf required version #
+				AUTOCONF_PREREQ=$($GREP ^AC_PREREQ $package_name-$package_version/configure.ac | $AWK -F'(' '{print $NF}' | $AWK -F')' '{print $1}' | $SED 's/\[//g' | $SED 's/\]//g');
+
+				# If configure.ac has not defined AC_PREREQ #
+				# Then check for 'configure' generated by Autoconf (Version) #
+				if test -z "$AUTOCONF_PREREQ"; then
+					echolog_debug_verbose "$DEBUG 'AC_PREREQ' is not defined in 'configure.ac'!";
+					AUTOCONF_PREREQ=$($GREP Autoconf $package_name-$package_version/configure | $GREP ^generated | $HEAD -1 | $AWK '{print $NF}');
+					if test -z "$AUTOCONF_PREREQ"; then
+						echolog_debug_verbose "$DEBUG Check 'configure' defined 'GNU Autoconf' version ($AUTOCONF_PREREQ)!";
+					fi;
+				fi;
+
+				# If have $AUTOCONF_PREREQ then #
+				if test ! -z "$AUTOCONF_PREREQ"; then
+					echolog_debug_verbose "$DEBUG File 'configure.ac' requires 'GNU Autoconf' version ($AUTOCONF_PREREQ)!";
+
+					# Check if AC_PREREQ matches installed Autoconf version #
+					if test "$AUTOCONF_PREREQ" == "$AUTOCONF_VERSION"; then
+						# If installed autoconf is the same version as required autoconf then run autoconf #
+						# If required version is not defined then run autoconf #
+
+						echolog_debug "$DEBUG Running 'GNU Autotools' in '$package_name $package_version' sources!";
+
+						start_spinner "Running '${color_wht}GNU Autotools${color_reset}' attempting to create '${color_wht}configure${color_reset}'";
+
+						$CD $package_name-$package_version;
+
+						# Run distclean #
+						if test -f "Makefile"; then
+							echolog_debug "$DEBUG A previous 'Makefile' was found! Cleaning sources: '$MAKE distclean' ..."; 
+							$MAKE distclean &> ../$package_name.src-distclean-$BUILDLOG;
+						else
+							echolog_debug "$DEBUG No previous 'Makefile' was found!"; 
+						fi;
+
+						# Run GNU Autotools #
+						$ACLOCAL --verbose &> ../$package_name.src-$ACLOCAL-$BUILDLOG;
+						$LIBTOOLIZE -v &> ../$package_name.src-$LIBTOOLIZE-$BUILDLOG;
+						$AUTOCONF -v &> ../$package_name.src-$AUTOCONF-$BUILDLOG;
+						$AUTOMAKE -a -v &> ../$package_name.src-$AUTOMAKE-$BUILDLOG;
+						stop_spinner $?;
+					else
+						echolog_debug_verbose "$DEBUG File 'configure.ac' requires 'GNU Autoconf' version ($AUTOCONF_PREREQ) but installed is ($AUTOCONF_VERSION)!";
+					fi;
+				else
+					echolog_debug_verbose "$DEBUG File 'configure.ac' does not require a 'GNU Autoconf' specific version!";
+
+					echolog_debug "$DEBUG Running 'GNU Autotools' in '$package_name $package_version' sources!";
+
+					start_spinner "Running '${color_wht}GNU Autotools${color_reset}' attempting to create '${color_wht}configure${color_reset}'";
+
+					$CD $package_name-$package_version;
+
+					# Run distclean #
+					if test -f "Makefile"; then
+						echolog_debug "$DEBUG A previous 'Makefile' was found! Cleaning sources: '$MAKE distclean' ..."; 
+						$MAKE distclean &> ../$package_name.src-distclean-$BUILDLOG;
+					else
+						echolog_debug "$DEBUG No previous 'Makefile' was found!"; 
+					fi;
+
+					# Run GNU Autotools #
+					$ACLOCAL --verbose &> ../$package_name.src-$ACLOCAL-$BUILDLOG;
+					$LIBTOOLIZE -v &> ../$package_name.src-$LIBTOOLIZE-$BUILDLOG;
+					$AUTOCONF -v &> ../$package_name.src-$AUTOCONF-$BUILDLOG;
+					$AUTOMAKE -a -v &> ../$package_name.src-$AUTOMAKE-$BUILDLOG;
+					stop_spinner $?;
+				fi;
+			else
+				echolog_debug_verbose "$DEBUG No 'configure.ac' file was found!"; 
+			fi;
+		else
+			echolog_debug_verbose "$DEBUG Use of 'GNU Autotools' disabled by user!";
+		fi;
+
+		# CONFIGURE #
+		if [ "$CONFIGURE_SELF_DIR" != "yes" ]; then
+			# Create temp directory to 'configure' package #
+			$MKDIR -p $GENETIC_TMP/$package_name-$package_version/src.configure;
+			$CD $GENETIC_TMP/$package_name-$package_version/src.configure;
+
+			# Load new_work_spinner for configure
+			echolog_debug_verbose "$DEBUG Running '../$package_name-$package_version/configure --prefix=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS' ...";
+			start_spinner "Running '${color_wht}configure${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+
+			$FIND ../$package_name-$package_version -exec $TOUCH {} \; &>/dev/null
+
+			if test -f "../$package_name-$package_version/Makefile"; then
+				echolog_debug "$DEBUG A previous 'Makefile' was found! Cleaning sources with '$MAKE clean' ..."; 
+				$CD ../$package_name-$package_version;
+				$MAKE clean &> ../$package_name.src-clean-$BUILDLOG;
+				$CD ../src.configure;
+			else
+				echolog_debug "$DEBUG No previous 'Makefile' was found!"; 
+			fi;
+
+			# configure #
+			../$package_name-$package_version/configure --prefix=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS &> ../$package_name.src-configure-$BUILDLOG
+
+			stop_spinner $?;
+
+			TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/src.configure/Makefile";
+		else
+			$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+
+			# Load new_work_spinner for configure
+			echolog_debug_verbose "$DEBUG Running './configure --prefix=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS' ...";
+			start_spinner "Running '${color_wht}configure${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+
+			$TOUCH ../$package_name-$package_version &>/dev/null
+
+			if test -f "Makefile"; then
+				echolog_debug "$DEBUG A previous 'Makefile' was found! Cleaning sources with '$MAKE clean' ..."; 
+				$MAKE clean &> ../$package_name.src-clean-$BUILDLOG;
+			else
+				echolog_debug "$DEBUG No previous 'Makefile' was found!"; 
+			fi;
+
+			# configure #
+			./configure --prefix=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS &> ../$package_name.src-configure-$BUILDLOG
+
+			stop_spinner $?;
+
+			TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/Makefile";
+		fi;
+	else
+		echolog_debug_verbose "$DEBUG '$package_name-$package_version' 'configure' script not found!";
+	fi;
+
+	# If package uses CMAKE
+	if test -f "$package_name-$package_version/CMakeLists.txt" && test ! -f "$package_name-$package_version/configure"; then
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Running '${color_wht}cmake${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' 'CMakeLists.txt' file!";
+		
+		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+		$MKDIR build.cmake
+		$CD build.cmake
+		$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX ../ &> ../../$package_name.src-cmake-$BUILDLOG;
+		stop_spinner $?;
+
+		TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/build.cmake/Makefile";
+	fi
+
+	# If package is a Perl Module then load "Makefile.PL" #
+	if test -f "$package_name-$package_version/Makefile.PL" && test ! -f "$package_name-$package_version/configure"; then
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Running '${color_wht}Makefile.PL${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' '${TEMP_MAKEFILE}.PL' script!";
+
+		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+
+    		# Makefile.PL #
+    		$PERL Makefile.PL &> ../$package_name.src-Makefile.PL-$BUILDLOG;
+		stop_spinner $?;
+		
+		TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/Makefile";
+	fi
+
+	# If package is a Python Module with "configure.py" #
+	if test -f "$package_name-$package_version/configure.py"; then
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Running '${color_wht}configure.py${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' 'configure.py' script!";
+
+		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+
+		# configure.py #
+		$PYTHON configure.py &> ../$package_name.src-configure.py-$BUILDLOG;
+		stop_spinner $?;
+  	fi;
+  
+	# If package is a Python Module with "setup.py" #
+  	if test -f "$package_name-$package_version/setup.py"; then
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Running '${color_wht}setup.py${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' 'setup.py' script!";
+
+		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+
+		# setup.py #
+		$PYTHON setup.py build &> ../$package_name.src-setup.py-$BUILDLOG;
+		stop_spinner $?
+	fi
+
+	# If package uses Meson build system #
+  	if test -f "$package_name-$package_version/meson.build"; then
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Running '${color_wht}meson${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
+		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' 'meson'!";
+
+		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
+
+		# meson configure #
+		mkdir build.meson &&
+		cd build.meson &&
+		$MESON --prefix=$GEN_PKGRULES_PREFIX ../ &> ../../$package_name.src-meson-$BUILDLOG;
+		stop_spinner $?
+	fi
+
+	# Check Makefile for DESTDIR or PREFIX (preference DESTDIR)
+	echologn_debug_verbose "$DEBUG Reading 'Makefile' and check for <DESTDIR> and <PREFIX> ...";
+	if test -f "$TEMP_MAKEFILE"; then
+		TEST_PREFIX=$($CAT $TEMP_MAKEFILE | $GREP "DESTDIR");
+		TEST_DESTDIR=$($CAT $TEMP_MAKEFILE | $GREP "PREFIX");
+	fi;
+
+	# If empty add PREFIX to GEN_PKGRULES_VARPREFIX
+	if test -z "$TEST_PREFIX"; then GEN_PKGRULES_VARPREFIX="PREFIX"; fi;
+
+	# if empty add DESTDIR to GEN_PKGRULES_VARPREFIX #
+	if test -z "$TEST_DESTDIR"; then GEN_PKGRULES_VARPREFIX="DESTDIR"; fi;
+	echolog_debug_nodate_verbose "$FINISHED";
+
+	# If GEN_PKGRULES_VARPREFIX is empty add DESTDIR to GEN_PKGRULES_VARPREFIX
+	if test -z "$GEN_PKGRULES_VARPREFIX"; then GEN_PKGRULES_VARPREFIX="DESTDIR"; fi;
+	echolog_debug_verbose "$DEBUG Rules file 'GEN_PKGRULES_VARPREFIX' value is: '$GEN_PKGRULES_VARPREFIX'.";
+
+	### Generate package source files ###
+	echolog_debug_verbose "$DEBUG Start writing '$packages_to_generate' source files.";
+
+	# Change to 'genetic' source package directory #
+	$CD $GENETIC_TMP/$package_name-$package_version;
+
+	### Start '$package_name' 'SrcInfo' file ###
+	echologn_debug_verbose "$DEBUG Writing '$package_name' ($package_version) source package 'SrcRules' file ...";
+	$ECHO "source=$package_name" > $GENETIC_TMP/$package_name-$package_version/SrcInfo;
+	$ECHO "version=$package_version" >> $GENETIC_TMP/$package_name-$package_version/SrcInfo;
+	$ECHO "srcurl=http://srchost/$package_name-$package_version" >> $GENETIC_TMP/$package_name-$package_version/SrcInfo;
+	$ECHO "category=base" >> $GENETIC_TMP/$package_name-$package_version/SrcInfo;
+	$ECHO "depends=" >> $GENETIC_TMP/$package_name-$package_version/SrcInfo;
+	echolog_debug_nodate_verbose "$FINISHED";
+	### End '$package_name' 'SrcInfo' file ###
+
+	for package_to_generate in $packages_to_generate; do
+
+		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
+		start_spinner "Writing '${color_wht}$package_to_generate${color_reset}' required package files";
+
+		### Start creating 'genetic' directories ###
+		echolog_debug "$DEBUG Creating '$package_to_generate' ($package_version) source package required directories ...";
+		$MKDIR -p $GENETIC_TMP/$package_name-$package_version/$package_to_generate &>/dev/null;
+		$MKDIR -p $GENETIC_TMP/$package_name-$package_version/$package_to_generate/patches &>/dev/null;
+		$MKDIR -p $GENETIC_TMP/$package_name-$package_version/$package_to_generate/files &>/dev/null;
+		### End creating 'genetic' directories ###
+
+		# Define package Rules PATHS #
+		# System Configuration is in /etc by default, 'genetic' is installed in '/usr' #
+		if test "$GEN_PKGRULES_PREFIX" == "/usr"; then
+			GEN_PKGRULES_SYSCONFDIR="/etc";
+		else
+			GEN_PKGRULES_SYSCONFDIR="$GEN_PKGRULES_PREFIX/etc";
+		fi;
+
+		# Local State is in /var by default, 'genetic' is installed in '/usr' #
+		if test "$GEN_PKGRULES_PREFIX" == "/usr"; then
+			GEN_PKGRULES_LOCALSTATEDIR="/var";
+		else
+			GEN_PKGRULES_LOCALSTATEDIR="$GEN_PKGRULES_PREFIX/var";
+		fi;
+
+		### Setup Rules file configure options ###
+		RULES_CONFIGURE_OPTIONS="--host=\$GENUINE_HOST --target=\$GENUINE_TGT --build=\$GENUINE_TGT --prefix=$GEN_PKGRULES_PREFIX --sysconfdir=$GEN_PKGRULES_SYSCONFDIR --localstatedir=$GEN_PKGRULES_LOCALSTATEDIR --docdir=$GEN_PKGRULES_PREFIX/share/doc/\$name-\$version $CONFIGURE_OPTIONS --disable-static --enable-shared";
+
+		echolog_debug "$DEBUG Setup 'Rules' file 'configure' options: '$RULES_CONFIGURE_OPTIONS'.";
+
+		RULES_CONFIGURE_OPTIONS_LIST=$($ECHO $RULES_CONFIGURE_OPTIONS | $SED 's/ / \\\n		/g');
+
+		### Write '$package_name' 'Rules' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) source package 'Rules' file ...";
+		$ECHO "#!/bin/bash
+
+# Load Info file #
+source ./Info;
+
+# Fake GEN<$GEN_PKGRULES_VARPREFIX> = <$ROOTFS> to install package #
+GENPKG$GEN_PKGRULES_VARPREFIX=\"\$(pwd)/$ROOTFS\";
+
+# Change to source directory #
+cd ../\$original_name-\$version;
+" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+
+# GNU CONFIGURE
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/configure"; then
+  $ECHO "# configure #
+if test -f \"configure\"; then
+	echo \" --- Configure <\$name (\$version)> ---\";
+	./configure $RULES_CONFIGURE_OPTIONS_LIST;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+else
+  if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/CMakeLists.txt"; then
+  # CMAKE CONFIGURE
+  $ECHO "# CMake configure #
+if test -f \"CMakeLists.txt\"; then
+	echo \" --- CMake Configure <\$name (\$version)> ---\";
+	rm -rf build.cmake &&
+	mkdir build.cmake &&
+	cd build.cmake &&
+	$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX -DCMAKE_BUILD_TYPE=Release ../;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+  fi;
+fi;
+
+# MESON CONFIGURE
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/meson.build"; then
+  $ECHO "# Meson configure #
+if test -f \"meson.build\"; then
+	echo \" --- Meson Configure <\$name (\$version)> ---\";
+	mkdir build.meson;
+	cd build.meson;
+	$MESON --prefix=$GEN_PKGRULES_PREFIX ../;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# PERL MAKEFILE
+if test -f "${TEMP_MAKEFILE}.PL"; then
+  $ECHO "# Makefile.PL #
+if test -f \"Makefile.PL\"; then
+	echo \" --- Configure <\$name (\$version)> ---\";
+	$PERL Makefile.PL;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# PYTHON CONFIGURE
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/configure.py"; then
+  $ECHO "# configure.py #
+if test -f \"configure.py\"; then
+	echo \" --- Configure <\$name (\$version)> ---\";
+	$PYTHON configure.py;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# PYTHON SETUP BUILD
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/setup.py"; then
+  $ECHO "# setup.py #
+if test -f \"setup.py\"; then
+	echo \" --- Configure <\$name (\$version)> ---\";
+	$PYTHON setup.py build;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# PYTHON SETUP INSTALL
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/setup.py"; then
+  $ECHO "# Create install directory
+mkdir -pv \${GENPKG$GEN_PKGRULES_VARPREFIX};
+
+# setup.py #
+if test -f \"setup.py\"; then
+	echo \" --- Install <\$name (\$version)> ---\";
+	$PYTHON setup.py install --optimize=1 --root=dest;
+	cp -av dest/*  \${GENPKG$GEN_PKGRULES_VARPREFIX}
+	#cp -av ../\$name/files/* \${GENPKG$GEN_PKGRULES_VARPREFIX}/
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# Ninja #
+if test -f "$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/meson.build"; then
+  $ECHO "# ninja
+if test -f \"build.ninja\"; then
+	echo \" --- Ninja <\$name (\$version)> ---\";
+	$NINJA;
+fi;
+
+# Create install directory
+mkdir -pv \${GENPKG$GEN_PKGRULES_VARPREFIX};
+
+# ninja install
+if test -f \"build.ninja\"; then
+	echo \" --- Ninja Install <\$name (\$version)> ---\";
+	$GEN_PKGRULES_VARPREFIX=\${GENPKG$GEN_PKGRULES_VARPREFIX} $NINJA install;
+	#cp -av ../\$name/files/* \${GENPKG$GEN_PKGRULES_VARPREFIX}/
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# Makefile #
+if test -f "$TEMP_MAKEFILE" || test -f "${TEMP_MAKEFILE}.PL"; then
+  $ECHO "# make
+if test -f \"Makefile\" || test -f \"makefile\"; then
+	echo \" --- Make <\$name (\$version)> ---\";
+	$MAKE $GEN_MAKE_OPTS;
+fi;
+
+# Create install directory
+mkdir -pv \${GENPKG$GEN_PKGRULES_VARPREFIX};
+
+# make install
+if test -f \"Makefile\" || test -f \"makefile\"; then
+	echo \" --- Make Install <\$name (\$version)> ---\";
+	$MAKE $GEN_MAKE_OPTS $GEN_PKGRULES_VARPREFIX=\${GENPKG$GEN_PKGRULES_VARPREFIX} install;
+	#cp -av ../\$name/files/* \${GENPKG$GEN_PKGRULES_VARPREFIX}/
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+		### End '$package_name' 'Rules' file ###
+
+		### Start '$package_name' 'Info' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) package 'Info' file ...";
+		$ECHO "### Package <$package_to_generate> info. ###
+
+original_name=$package_name
+name=$package_to_generate
+version=$package_version
+package=$package_name-$package_version
+category=
+depends=
+installbefore=
+installafter=
+replaces=\"$package_name $package_name.dbg\"
+" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Info;
+		### End '$package_name' 'Info' file ###
+
+		### Start '$package_name' 'PostInst' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) package 'PostInst' file ...";
+		$ECHO "#!/bin/bash" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PostInst
+		### End '$package_name' 'PostInst' file ###
+
+		### Start '$package_name' 'PreInst' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) package 'PreInst' file ...";
+		$ECHO "#!/bin/bash" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PreInst
+		### End '$package_name' 'PreInst' file ###
+
+		### Start '$package_name' 'PostRemv' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) package 'PostRemv' file ...";
+		$ECHO "#!/bin/bash" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PostRemv
+		### End '$package_name' 'PostRemv' file ###
+
+		### Start '$package_name' 'PreRemv' file ###
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) package 'PreRemv' file ...";
+		$ECHO "#!/bin/bash" > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PreRemv
+		### End '$package_name' 'PreRemv' file ###
+
+		### Setup '$package_name' file atributes ###
+		echolog_debug "$DEBUG Changing '$package_to_generate' ($package_version) package file attributes ...";
+		$CHMOD +x $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+		$CHMOD +x $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PostInst
+		$CHMOD +x $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PreInst
+		$CHMOD +x $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PostRemv
+		$CHMOD +x $GENETIC_TMP/$package_name-$package_version/$package_to_generate/PreRemv
+
+		# Add package name to SrcInfo file ("SrcInfo" file is needed by "genetic --build") #
+		echolog_debug "$DEBUG Writing '$package_to_generate' ($package_version) into 'SrcInfo' file ...";
+		$ECHO "package=$package_to_generate" >> $GENETIC_TMP/$package_name-$package_version/SrcInfo
+
+		stop_spinner $?;
+	done;
+	
+	### Removing src.configure directory ### 
+	echolog_debug_verbose "$DEBUG Delete 'src.configure' directory if found.";
+	check_dir "$GENETIC_TMP/$package_name-$package_version/src.configure" "$RM -rf $GENETIC_TMP/$package_name-$package_version/src.configure";
+	### End cleaning src.configure directory ###
+
+	### Source package '$SOURCE_NAME' generated #
+	echolog "$INFO Source package '${color_wht}$package_name $package_version${color_reset}' files created in '${color_wht}$GENETIC_TMP/$package_name-$package_version${color_reset}'.";
+
+	### End for each 'package_to_generate' create 'genetic' source files ###
+
+	return $true;
+}
+
+

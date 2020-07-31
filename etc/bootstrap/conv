@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for p in $(cat plasma5); do
+ v=$(echo $p | awk -F'-' '{print $NF}');
+ n=$(echo $p | sed 's/-'$v'//g');
+ echo "$n:$n";
+done

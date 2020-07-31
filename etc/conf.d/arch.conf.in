@@ -1,0 +1,20 @@
+# Genetic ARCH Setup #
+GENETIC_ARCH=$(uname -m);
+
+GENETIC_MARCH=$(echo $GENETIC_ARCH | sed 's/_/-/g');
+
+# Define Genuine target triplet $(gcc -dumpmachine)
+GENUINE_TGT="$GENETIC_ARCH-genuine-linux-gnu"
+GENUINE_HOST=$(echo $MACHTYPE | sed -e 's/-[^-]*/-genuine/')
+
+# Export Genuine Target Triplet 
+export GENUINE_TGT GENUINE_HOST GENETIC_ARCH GENETIC_MARCH GENETIC_HOST
+
+_GCC_DEBUG="-g";
+_GCC_RELEASE="-s";
+
+CFLAGS="-O2 $_GCC_RELEASE -pipe -march=$GENETIC_MARCH -mtune=generic -fPIC";
+CXXFLAGS="$CFLAGS";
+
+# Export CFLAGS & CXXFLAGS #
+export CFLAGS CXXFLAGS;

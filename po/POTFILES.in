@@ -1,0 +1,18 @@
+# List of source files which contain translatable strings.
+src/genbuild.c
+src/genuninstall.c
+src/libgenetic-build.c
+src/libgenetic-env.c
+src/libgenetic-package.c
+src/libgenetic-uninstall.c
+src/genetic.c
+src/libgenetic.c
+src/libgenetic-db.c
+src/libgenetic-install.c
+src/libgenetic-packager.c
+src/libgenetic-unpack.c
+src/geninstall.c
+src/libgenetic-bootstrap.c
+src/libgenetic-debug.c
+src/libgenetic-log.c
+src/libgenetic-source.c

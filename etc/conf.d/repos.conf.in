@@ -1,0 +1,21 @@
+## Setup genetic Repositories ###
+
+# Enable genetic Repos # (default: yes) #
+ENABLEREPOS="yes";
+
+### Modify with care! ###
+
+# System Repos directory #
+REPOSDIR="@sysconfdir@/@PACKAGE@/repos";
+
+# System Repos Cache directory #
+REPO_CACHE_DIR="@localstatedir@/cache/@PACKAGE@/Repositories";
+
+# Repo index file #
+REPO_INDEX_FILE="INDEX";
+
+# Repo index Sources file #
+REPO_INDEX_SRC_FILE="INDEX-src";
+
+# Repo INDEX Cache
+REPO_INDEX_CACHE="$REPO_CACHE_DIR/${REPO_INDEX_FILE}.cache"

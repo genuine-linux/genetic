@@ -1,0 +1,104 @@
+#!/bin/bash
+
+# @PACKAGE@-@VERSION@ (libgenetic-db) #
+
+# Copyright (c) 2014-2020 Antonio Cao (@burzumishi) #
+
+# This is free software;
+# You have unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# Genetic Package Manager Database Library #
+
+# libgenetic-db.la: Package Manager Database functions and definitions #
+
+# update_genetic_packages_db(): Updates genetic 'Package Database Index' entries #
+update_genetic_packages_db() {
+
+	echolog_debug "$DEBUG ================== %%% genetic %%% ==================";
+	echolog_debug "$DEBUG Starting 'update_genetic_packages_db()'!";
+	echolog_debug "$DEBUG =====================================================";
+
+	### Start Updating 'Package Database Index' $GENETIC_PACKAGES_DB ###
+	echolog_debug "$DEBUG Updating 'genetic' installed packages database index '$GENETIC_PACKAGES_DB' ...";
+
+	# Find installed packages 'Info' files #
+	InfoFiles="$($FIND $CACHEDIR -name Info -type f)";
+
+	if test ! -z "$InfoFiles"; then
+		# Initialize database file '$GENETIC_PACKAGES_DB' #
+		> $GENETIC_PACKAGES_DB;
+	
+		# If there are 'InfoFiles' then load '$GENETIC_PACKAGES_DB' #
+		for InfoFile in $InfoFiles; do
+			$ECHO "--------------------------------------" >> $GENETIC_PACKAGES_DB
+			$ECHO "File: $InfoFile" >> $GENETIC_PACKAGES_DB
+			$ECHO "" >> $GENETIC_PACKAGES_DB
+			$CAT $InfoFile >> $GENETIC_PACKAGES_DB
+			$ECHO "" >> $GENETIC_PACKAGES_DB		
+		done
+
+		return $true;
+	else
+		# Notify issue to user #
+		echolog "$ERROR Error! Installed packages '$GENETIC_PACKAGES_DB' update failed!";
+		echolog "$ERROR Error! Can't find installed packages 'Info' files at '$CACHEDIR'!";
+
+		# Close genetic instance #
+		exit_instance $false;
+	fi;
+
+	return $true;
+}
+
+# list_installed_packages($PATTERN): List installed packages #
+list_installed_packages() {
+
+	PATTERN="$1";
+
+	echolog_debug "$DEBUG ================== %%% genetic %%% ==================";
+	echolog_debug "$DEBUG Starting 'list_installed_packages($PATTERN)'!";
+	echolog_debug "$DEBUG =====================================================";
+
+	### Start Updating 'Package Database Index' $GENETIC_PACKAGES_DB ###
+	update_genetic_packages_db;
+
+	# List packages matching $PATTERN #
+	echolog_debug "$DEBUG Listing installed packages found in database index '$GENETIC_PACKAGES_DB' matching '$PATTERN' ...";
+	case "$PATTERN" in
+		"all"|"All"|"ALL") $GREP ^name $GENETIC_PACKAGES_DB | $SED 's/name=//g';
+		;;
+		*) $GREP ^name $GENETIC_PACKAGES_DB | $SED 's/name=//g' | $GREP $PATTERN;
+		;;
+	esac;
+
+	return $true;
+}
+
+# list_installed_files($PATTERN): List installed files #
+list_installed_files() {
+
+	PATTERN="$1";
+
+	echolog_debug "$DEBUG ================== %%% genetic %%% ==================";
+	echolog_debug "$DEBUG Starting 'list_installed_files($PATTERN)'!";
+	echolog_debug "$DEBUG =====================================================";
+
+	# Find installed packages files and links #
+	echolog_debug "$DEBUG Listing installed files found in database index '$GENETIC_PACKAGES_DB' matching '$PATTERN' ...";
+	for result in $($GREP ${PATTERN} $CACHEDIR/*/*.{files,links}); do
+		FOUND_PACKAGE="$($ECHO "$result" | $AWK -F':' '{print $1}' | $AWK -F'/' '{print $NF}' | $SED 's/\.files//g' | $SED 's/\.links//g')";
+		FOUND_FILE="$($ECHO "$result" | $AWK -F: '{print $2}')";
+		if [ -f "$FOUND_FILE" ]; then
+			$ECHO "$INFO $FOUND_PACKAGE -> $FOUND_FILE";
+		fi;
+	done;
+
+	return $true;
+}
+

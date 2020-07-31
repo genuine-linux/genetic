@@ -1,0 +1,33 @@
+# @PACKAGE@.conf - Genetic Package Manager #
+
+# Enable Start Message #
+ENABLE_STARTMSG="yes";
+
+# Terminal Color Support #
+ENABLE_COLOR="yes";
+
+# Language Support #
+LC_ALL="C";
+LANG="C";
+
+TEXTDOMAIN=$0;
+TEXTDOMAINDIR="@localedir@";
+
+### Modify with care! ###
+
+# Install directory for genetic $ROOTFS package files #
+INSTDIR="/";
+
+# genetic shared work directory #
+TMPDIR="@localstatedir@/tmp";
+
+# genetic process locking #
+LOCKDIR="@localstatedir@/lock";
+LOCKFILE="$LOCKDIR/@PACKAGE@.lock";
+
+# Genetic Build Directory Setup #
+GENETIC_TMP="$TMPDIR/@PACKAGE@";
+
+# 'genetic' Cache Directory #
+CACHEDIR="@localstatedir@/cache/@PACKAGE@";
+

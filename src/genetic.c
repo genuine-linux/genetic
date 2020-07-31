@@ -1,0 +1,75 @@
+#!/bin/bash
+
+# @PACKAGE@-@VERSION@ (Genetic Package Manager) #
+
+# Copyright (c) 2014-2020 Antonio Cao (@burzumishi) #
+
+# This is free software; 
+# You have unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+# genetic 19.x.x (Genetic Package Manager) #
+
+# Load genetic Configuration Files and Setups #
+
+GENETIC_CONF="@SYSCONFDIR@/@PACKAGE@";
+GENETIC_LIB="@libdir@/@PACKAGE@";
+
+# Import genetic Main Config File #
+source $GENETIC_CONF/@PACKAGE@.conf;
+
+# Import genetic Dinamic Config Files (conf.d) #
+if test -d "$GENETIC_CONF/conf.d"; then
+  CONFD=$(find $GENETIC_CONF/conf.d -iname "*.conf");
+  for confd in $CONFD; do
+    source $confd;
+  done
+fi;
+
+# Load genetic Libraries #
+
+# Load genetic Environment Definitions #
+source $GENETIC_LIB/libgenetic-env;
+source $GENETIC_LIB/libgenetic-i18n;
+
+# Load genetic Logger Functions #
+source $GENETIC_LIB/libgenetic-log;
+
+# Load genetic Core Functions #
+source $GENETIC_LIB/libgenetic;
+
+# Load genetic environment debug #
+source $GENETIC_LIB/libgenetic-debug;
+
+# Load genetic Package Manager Functions #
+source $GENETIC_LIB/libgenetic-db;
+source $GENETIC_LIB/libgenetic-package;
+source $GENETIC_LIB/libgenetic-source;
+source $GENETIC_LIB/libgenetic-build;
+source $GENETIC_LIB/libgenetic-packager;
+source $GENETIC_LIB/libgenetic-uninstall;
+source $GENETIC_LIB/libgenetic-install;
+source $GENETIC_LIB/libgenetic-unpack;
+
+# Load genetic Repo Functions #
+source $GENETIC_LIB/libgenetic-repos;
+
+# Load genetic Bootstrap Genuine system #
+source $GENETIC_LIB/libgenetic-bootstrap;
+
+# Load genetic GTK GUI (zenity) #
+source $GENETIC_LIB/libgenetic-gtk;
+
+# Load genetic Installer #
+source $GENETIC_LIB/libgenetic-installer;
+
+# Start 'genetic' #
+
+main "$@";
+
+# End 'genetic' #
