@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 
 #     _______________________________________________________________________
 #     |                                                                     |
@@ -73,13 +73,13 @@ autoconf
 for doc in INSTALL README AUTHORS NEWS ChangeLog; do
 	if test ! -f "$doc"; then
 		echo "Linking README.md -> $doc ..."
-		ln -svf README.md $doc
+		cp -v README.md $doc
 	fi
 done
 
 if test ! -f "COPYING"; then
 	echo "Linking LICENSE -> COPYING ..."
-	ln -svf LICENSE COPYING
+	cp -v LICENSE COPYING
 fi;
 
 echo "Running automake ...";
