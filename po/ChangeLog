@@ -37,6 +37,10 @@
 2020-07-31  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.in.in: New file, from gettext-0.20.1.
+
+2020-07-31  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.in.in: New file, from gettext-0.20.1.
 	* en@boldquot.header: Upgrade to gettext-0.20.1.
 	* en@quot.header: Upgrade to gettext-0.20.1.
 	* insert-header.sin: Upgrade to gettext-0.20.1.
