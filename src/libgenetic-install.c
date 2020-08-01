@@ -27,23 +27,58 @@ gen_install_packages() {
     echolog_debug "$DEBUG =====================================================";
 
     ### CHECK $REPO_INDEX_CACHE ###
-    # check_file "$REPO_INDEX_CACHE";
+    if ! check_file $INSTALL_PACKAGE; then
+      echolog "$INFO Searching for '$INSTALL_PACKAGE' on $REPO_INDEX_CACHE"
 
-    ### TODO ####
-    ### TODO ####
-    ### TODO ####
-    
-    ### DOWNLOAD PACKAGES FROM INDEX CACHE ###
-    #for pkg in "doc,dbg,dev"; do
-    #  if $ECHO $gen | $GREP -q ".${pkg}$"; then
-    #    #gen_full_name=$($ECHO $gen | $SED 's/\.'$pkg'//g');
-    #    gen_full_name="${gen%.$pkg}";
-    #    gen_type=".${pkg}.gen";
-    #  else
-    #    gen_full_name=$gen;
-    #    gen_type=".gen";
-    #  fi;
-    #done;
+      check_file "$REPO_INDEX_CACHE"
+      errorcheck $? "Missing $REPO_INDEX_CACHE (try genetic --update)"
+
+      case $INSTALL_PACKAGE in
+        *.dev)
+          MATCH_LIST=$(<"$REPO_INDEX_CACHE" cut -d' ' -f2,3,8,9 \
+            | grep -w devel \
+            | grep -E "${INSTALL_PACKAGE}"
+          )
+        ;;
+        *.doc)
+          MATCH_LIST=$(<"$REPO_INDEX_CACHE" cut -d' ' -f2,3,8,9 \
+            | grep -w documentation \
+            | grep -E "$INSTALL_PACKAGE"
+          )
+        ;;
+        *)
+          MATCH_LIST=$(<"$REPO_INDEX_CACHE" cut -d' ' -f2,3,8,9 \
+            | grep -E -w "$INSTALL_PACKAGE"
+          )
+        ;;
+      esac
+
+      test -n "$MATCH_LIST"
+      errorcheck $? "'$INSTALL_PACKAGE' not found"
+
+      echolog "$WARNING concidencias:"
+      while read line; do printf "$INFO * %s\\n" "$line"; done <<<"$MATCH_LIST"
+      continue_prompt
+
+      while read line
+      do
+        echolog "$INFO Comprobando '$line'"
+        read package_file package_alias package_type server <<<"$line"
+        if test -f $PACKAGEPOOL/$package_file; then
+          echolog "$INFO '$package_file' presente en $PACKAGEPOOL"
+          continue
+        fi
+
+        package_url="http://$server/PackagePool/$package_file"
+        echolog "$INFO Descargando $package_url"
+        wget "$package_url" -O $PACKAGEPOOL/$package_file
+        errorcheck $? "fallou a descarga"
+      done <<<"$MATCH_LIST"
+
+      $FUNCNAME $(printf "$PACKAGEPOOL/%s\n" $(cut -d' ' -f1 <<<"$MATCH_LIST"))
+      errorcheck $? "Instalation failed"
+      continue
+    fi
 
     ### Install packages from $PACKAGEPOOL or $SOURCEPOOL ###
 
