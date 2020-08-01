@@ -1,0 +1,6 @@
+src/*.la
+**/Makefile
+**/Makefile.in
+etc/**/*.conf
+*~
+*.tar.*
