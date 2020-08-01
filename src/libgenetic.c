@@ -687,8 +687,8 @@ stop_spinner() {
 
 ### -- 'genetic' screen display and input functions -- ###
  
-# continue_promt: Ask user to continue or not #
-continue_promt() {
+# continue_prompt: Ask user to continue or not #
+continue_prompt() {
   echolog_debug "$DEBUG [ Continue? (y/n) ] Display user input prompt and wait for an answer!";
 
   # Display Continue Question #
