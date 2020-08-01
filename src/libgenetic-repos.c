@@ -159,6 +159,9 @@ function read_repo_files() {
  
   stop_spinner $?;
 
+	test -n "$INDEX_URLS"
+  errorcheck $? "$FUNCNAME: no *.list found at $REPOSDIR"
+
   return $?;
 }
 
