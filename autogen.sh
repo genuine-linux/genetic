@@ -107,13 +107,13 @@ cp -av /usr/share/automake-1.16/ar-lib ar-lib
 cp -av /usr/share/automake-1.16/depcomp depcomp
 
 
-CONFIGURE_USER_OPTIONS=$*;
+#CONFIGURE_USER_OPTIONS=$*;
 
-echo "Running: ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-shared --enable-nls $CONFIGURE_USER_OPTIONS";
+#echo "Running: ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-shared --enable-nls $CONFIGURE_USER_OPTIONS";
 
-sleep 2;
+#sleep 2;
 
-./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-shared --enable-nls $CONFIGURE_USER_OPTIONS;
+#./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-static --enable-shared --enable-nls $CONFIGURE_USER_OPTIONS;
 
 exit
 
