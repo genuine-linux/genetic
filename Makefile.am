@@ -150,7 +150,8 @@ install-data-hook:
 	cp -rfv icons $(DESTDIR)$(datarootdir)/icons; \
 	cp -rfv pixmaps $(DESTDIR)$(datarootdir)/pixmaps; \
 	$(_install_file_) genuine-installer.desktop \
-										$(DESTDIR)$(datarootdir)/applications/genuine-installer.desktop; \
+		$(DESTDIR)$(datarootdir)/applications/genuine-installer.desktop; \
+	cp -rfv etc/repos $(DESTDIR)$(sysconfdir)/@PACKAGE@/; \
 	echo "Setting up <$(prefix)> permissions to <$(USER):$(GROUP)> ..."; \
 	chown -R $(USER):$(GROUP) $(DESTDIR)$(localstatedir)/log/@PACKAGE@; \
 	chown -R $(USER):$(GROUP) $(DESTDIR)$(localstatedir)/run/lock/@PACKAGE@; \
