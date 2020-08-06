@@ -23,12 +23,11 @@ main() {
 	# Load 'genetic' core variables #
 	load_core_variables;
 
-	# Trap 'genetic' process 'SIGINT' 'SIGQUIT' 'SIGTERM' 'SIGKILL' will call _manage_system_int()_ function and exit 'genetic' instance safely #
+	# Trap 'genetic' process 'SIGINT' 'SIGQUIT' 'SIGTERM' 'SIGKILL' will call manage_system_int() function and exit 'genetic' instance safely #
 	trap_system_int;
 
 	# Start 'genetic' process main loop #
-	while :
-	do
+	while : ; do
 		# Read 'genetic' user keyboard input (wait for 'SIGINT', 'SIGKILL', 'SIGQUIT' & 'SIGTERM') #
 		read user_keyboard_input &
 
@@ -68,8 +67,7 @@ main() {
 			eval set -- "$ACTION_OPTIONS"
 
 			# Case $ACTION_OPTIONS #
-			while :
-			do
+			while : ; do
 				case "$1" in
 					--admindir) # Set alternative directory to store 'genetic' data #
 							CACHEDIR="$2"; shift 2;
@@ -194,7 +192,7 @@ main() {
 
             shift;
 
-            while (( $# )); do
+            while (( $# )) ; do
               INSTALL_PACKAGES="${1#--}";
 						  gen_install_packages "$INSTALL_PACKAGES";
               shift;
@@ -212,7 +210,7 @@ main() {
 
             shift;
 
-            while (( $# )); do
+            while (( $# )) ; do
 						  UNINSTALL_PACKAGES="${1#--}";
 						  gen_uninstall_packages "$UNINSTALL_PACKAGES";
               shift;
@@ -258,7 +256,7 @@ main() {
 
 ### -- 'genetic' OS funtions ###
 
-# trap_system_int(): Trap 'genetic' process 'SIGINT' 'SIGQUIT' 'SIGTERM' 'SIGKILL' will call _manage_system_int()_ function and exit 'genetic' instance safely #
+# trap_system_int(): Trap 'genetic' process 'SIGINT' 'SIGQUIT' 'SIGTERM' 'SIGKILL' will call manage_system_int() function and exit 'genetic' instance safely #
 trap_system_int() {
 	$TRAP "manage_system_int" SIGINT SIGQUIT SIGTERM SIGKILL
 }
@@ -344,16 +342,16 @@ exit_instance() {
 	reset_term_environment;
 
 	if test -z "$!"; then
-		echolog_debug "$DEBUG Process 'genetic' function _(exit_instance)_ detected subprocess (PID: $!)!"
+		echolog_debug "$DEBUG Process 'genetic' function (exit_instance) detected subprocess (PID: $!)!"
 	else
 		echolog_debug "$DEBUG No 'genetic' subprocess (PID) detected!"
 	fi
 
 	if test $exit_val -ne 0; then
-		echolog "$ERROR Error! Process '${color_wht}genetic${color_reset}' (${color_wht}PID: ${color_red}$$${color_reset}) terminated _(${color_wht}Err: ${color_red}$exit_val${color_reset})_ check errors!";
+		echolog "$ERROR Error! Process '${color_wht}genetic${color_reset}' (${color_wht}PID: ${color_red}$$${color_reset}) terminated (${color_wht}Err: ${color_red}$exit_val${color_reset}) check errors!";
 		exit $exit_val ;
 	else
-		echolog_debug "$DEBUG Process 'genetic' (PID: $$) terminated _(Err: $exit_val)_ Goodbye!";
+		echolog_debug "$DEBUG Process 'genetic' (PID: $$) terminated (Err: $exit_val) Goodbye!";
 		exit $true;
 	fi;
 }
@@ -451,8 +449,8 @@ errorcheck() {
 		# Check if $function is defined else define 'unknown' #
 		if test -z "$function"; then function="unknown"; fi;
 
-      echolog_debug "$ERROR Error! 'genetic' function _($function)_ exited _(Err: $error)_!";
-      echolog "$ERROR Error! '${color_wht}genetic${color_reset}' function _(${color_red}$function${color_reset})_ exited _(${color_wht}Err: ${color_red}$error${color_reset})_!";
+      echolog_debug "$ERROR Error! 'genetic' function ($function) exited (Err: $error)!";
+      echolog "$ERROR Error! '${color_wht}genetic${color_reset}' function (${color_red}$function${color_reset}) exited (${color_wht}Err: ${color_red}$error${color_reset})!";
 
 		if test "$ENABLE_FORCE" == "yes"; then
       echolog_debug "$ERROR Error! Override error because user is using '-f' or '--force' enabled option!";
@@ -478,7 +476,7 @@ check_file() {
   if test ! -f "$FILE"; then
     echolog_debug "$DEBUG Warning! Requested file '$FILE' was not found!";
 
-		# Define $GENETIC_LAST_ERROR to be displayed in _(errorcheck)_ #
+		# Define $GENETIC_LAST_ERROR to be displayed in (errorcheck) #
 		GENETIC_LAST_ERROR="$WARNING Warning! Requested file '$FILE' was not found!";
 
 		return $false;
@@ -487,7 +485,7 @@ check_file() {
 
 		# If $FILECMD is passed, then execute $FILECMD #
 		if test ! -z "$FILECMD"; then
-			echolog_debug "$DEBUG Function _(check_file)_ executing: '$FILECMD'";
+			echolog_debug "$DEBUG Function (check_file) executing: '$FILECMD'";
 			$FILECMD &>/dev/null;
 		fi;
 
@@ -505,7 +503,7 @@ check_dir() {
         if test ! -d "$DIR"; then
                 echolog_debug "$DEBUG Warning! Requested directory '$DIR' was not found!";
 
-		# Define $GENETIC_LAST_ERROR to be displayed in _(errorcheck)_ #
+		# Define $GENETIC_LAST_ERROR to be displayed in (errorcheck) #
 		GENETIC_LAST_ERROR="$WARNING Warning! Requested directory '$DIR' was not found!";
 
 		return $false;
@@ -514,7 +512,7 @@ check_dir() {
 
 		# If $DIRCMD is passed, then execute $DIRCMD #
 		if test ! -z "$DIRCMD"; then
-			echolog_debug "$DEBUG Function _(check_dir)_ executing: '$DIRCMD'";
+			echolog_debug "$DEBUG Function (check_dir) executing: '$DIRCMD'";
 			$DIRCMD &>/dev/null;
 		fi;
 		return $true;
@@ -531,7 +529,7 @@ check_link() {
   if test ! -L "$LINK"; then
     echolog_debug "$DEBUG Warning! Requested file link '$LINK' was not found!";
 
-		# Define $GENETIC_LAST_ERROR to be displayed in _(errorcheck)_ #
+		# Define $GENETIC_LAST_ERROR to be displayed in (errorcheck) #
 		GENETIC_LAST_ERROR="$WARNING Warning! Requested file link '$LINK' was not found!";
 
 		return $false;
@@ -540,7 +538,7 @@ check_link() {
 
 		# If $LINKCMD is passed, then execute $FILECMD #
 		if test ! -z "$LINKCMD"; then
-			echolog_debug "$DEBUG Function _(check_link)_executing: '$LINKCMD'";
+			echolog_debug "$DEBUG Function (check_link) executing: '$LINKCMD'";
 			$LINKCMD &>/dev/null;
 		fi;
 
@@ -694,8 +692,8 @@ continue_promt() {
 	read input
 	case $input in
 	     [Yy]*) ;;                      # "Yes", let's go! Continue! #
-	     [Nn]*) exit_instance $false ;; # "No" Call _(exit_instance)_ and exit '@PACKAGE' now! #
-	     *) echolog "$QUESTION Do you want to continue? (${color_wht}y/n${color_reset}): " ;; # "Retry!" _(y/n)_ Retry again!? #
+	     [Nn]*) exit_instance $false ;; # "No" Call (exit_instance) and exit '@PACKAGE' now! #
+	     *) echolog "$QUESTION Do you want to continue? (${color_wht}y/n${color_reset}): " ;; # "Retry!" (y/n) Retry again!? #
 	esac;
 
 	return $true;
@@ -747,3 +745,5 @@ help() {
 	exit_instance $true;
 }
 
+# vi: syntax=bash ts=2 sw=2 sts=2 sr noet 
+# vi: filetype=bash

@@ -25,7 +25,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = etc src po
 
-EXTRA_DIST = m4/ChangeLog  m4/ChangeLog scripts config.rpath m4/ChangeLog autogen.sh \
+EXTRA_DIST = m4/ChangeLog  m4/ChangeLog  m4/ChangeLog scripts config.rpath m4/ChangeLog autogen.sh \
 	doc etc src man README.md LICENSE m4 libtool autom4te.cache \
 	missing compile config.guess config.sub depcomp aclocal.m4 \
 	Doxyfile.in po ABOUT-NLS *.m4 TODO genuine-installer.desktop \
@@ -62,7 +62,7 @@ DEFS = -DLOCALEDIR=\"$(localedir)\" @DEFS@
 
 man_MANS = man/genetic.1
 
-CLEANDEVELFILES = compile configure depcomp genetic.h src/*.la ar-lib \
+CLEANDEVELFILES = compile configure depcomp genetic.h ar-lib \
 	autom4te.cache config.guess config.sub install-sh missing src/.libs \
 	config.status ltmain.sh depcomp README COPYING NEWS po/*.gmo m4 *.m4 \
 	src/genetic$(EXEEXT) src/genbuild$(EXEEXT) src/geninstall$(EXEEXT) \
@@ -75,7 +75,7 @@ CLEANDEVELFILES = compile configure depcomp genetic.h src/*.la ar-lib \
 CLEANBUILDFILES = config.log etc/genetic.conf etc/conf.d/repos.conf \
 	etc/conf.d/arch.conf etc/conf.d/build.conf etc/conf.d/db.conf \
 	etc/conf.d/editor.conf etc/conf.d/log.conf etc/conf.d/release.conf \
-	etc/conf.d/installer.conf \
+	etc/conf.d/installer.conf src/*.la \
 	`find $(srcdir) -iname "stamp-h1"` \
 	`find $(srcdir) -iname "stamp-po"` \
 	`find $(srcdir) -iname "Makefile"`

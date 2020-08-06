@@ -1,4 +1,8 @@
-CLEANFILES = genbuild.la genetic.la geninstall.la genuninstall.la libgenetic-bootimg.la libgenetic-bootstrap.la libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la
+CLEANFILES = genbuild.la genetic.la geninstall.la genuninstall.la libgenetic-bootimg.la libgenetic-bootstrap.la \
+						 libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la \
+						 libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la \
+						 libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la \
+						 libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la
 
 do_subst = sed -e 's,[@]sharedstatedir[@],$(sharedstatedir),g' \
 		-e 's,[@]localstatedir[@],$(localstatedir),g' \
@@ -15,13 +19,14 @@ do_subst = sed -e 's,[@]sharedstatedir[@],$(sharedstatedir),g' \
 		-e 's,[@]VERSION[@],$(VERSION),g' \
 		-e 's,[@]DESCRIPTION[@],$(DESCRIPTION),g'
 
+
 genetic_SOURCES = genbuild.c genetic.c geninstall.c genuninstall.c libgenetic-bootimg.c libgenetic-bootstrap.c libgenetic-build.c libgenetic.c libgenetic-db.c libgenetic-debug.c libgenetic-env.c libgenetic-gtk.c libgenetic-i18n.c libgenetic-install.c libgenetic-installer.c libgenetic-log.c libgenetic-package.c libgenetic-packager.c libgenetic-repoclient.c libgenetic-repolocal.c libgenetic-repos.c libgenetic-reposerver.c libgenetic-source.c libgenetic-uninstall.c libgenetic-unpack.c
 
 sbin_PROGRAMS = genetic$(EXEEXT) genbuild$(EXEEXT) geninstall$(EXEEXT) genuninstall$(EXEEXT)
 
 include_HEADERS = genetic.h
 
-libgeneticdir = $(libdir)/genetic
+libgeneticdir = $(libdir)
 
 libgenetic_DATA = libgenetic-bootimg.la libgenetic-bootstrap.la libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la
 

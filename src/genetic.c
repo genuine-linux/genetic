@@ -17,8 +17,8 @@
 
 # Load genetic Configuration Files and Setups #
 
-GENETIC_CONF="@SYSCONFDIR@/@PACKAGE@";
-GENETIC_LIB="@libdir@/@PACKAGE@";
+GENETIC_CONF="@sysconfdir@/@PACKAGE@";
+GENETIC_LIB="@libdir@";
 
 # Import genetic Main Config File #
 source $GENETIC_CONF/@PACKAGE@.conf;
@@ -34,42 +34,45 @@ fi;
 # Load genetic Libraries #
 
 # Load genetic Environment Definitions #
-source $GENETIC_LIB/libgenetic-env;
-source $GENETIC_LIB/libgenetic-i18n;
+source $GENETIC_LIB/libgenetic-env.la;
+source $GENETIC_LIB/libgenetic-i18n.la;
 
 # Load genetic Logger Functions #
-source $GENETIC_LIB/libgenetic-log;
+source $GENETIC_LIB/libgenetic-log.la;
 
 # Load genetic Core Functions #
-source $GENETIC_LIB/libgenetic;
+source $GENETIC_LIB/libgenetic.la;
 
 # Load genetic environment debug #
-source $GENETIC_LIB/libgenetic-debug;
+source $GENETIC_LIB/libgenetic-debug.la;
 
 # Load genetic Package Manager Functions #
-source $GENETIC_LIB/libgenetic-db;
-source $GENETIC_LIB/libgenetic-package;
-source $GENETIC_LIB/libgenetic-source;
-source $GENETIC_LIB/libgenetic-build;
-source $GENETIC_LIB/libgenetic-packager;
-source $GENETIC_LIB/libgenetic-uninstall;
-source $GENETIC_LIB/libgenetic-install;
-source $GENETIC_LIB/libgenetic-unpack;
+source $GENETIC_LIB/libgenetic-db.la;
+source $GENETIC_LIB/libgenetic-package.la;
+source $GENETIC_LIB/libgenetic-source.la;
+source $GENETIC_LIB/libgenetic-build.la;
+source $GENETIC_LIB/libgenetic-packager.la;
+source $GENETIC_LIB/libgenetic-uninstall.la;
+source $GENETIC_LIB/libgenetic-install.la;
+source $GENETIC_LIB/libgenetic-unpack.la;
 
 # Load genetic Repo Functions #
-source $GENETIC_LIB/libgenetic-repos;
+source $GENETIC_LIB/libgenetic-repos.la;
 
 # Load genetic Bootstrap Genuine system #
-source $GENETIC_LIB/libgenetic-bootstrap;
+source $GENETIC_LIB/libgenetic-bootstrap.la;
 
 # Load genetic GTK GUI (zenity) #
-source $GENETIC_LIB/libgenetic-gtk;
+source $GENETIC_LIB/libgenetic-gtk.la;
 
 # Load genetic Installer #
-source $GENETIC_LIB/libgenetic-installer;
+source $GENETIC_LIB/libgenetic-installer.la;
 
-# Start 'genetic' #
+# Start '@PACKAGE@' #
 
 main "$@";
 
-# End 'genetic' #
+# End '@PACKAGE@' #
+
+# vi: syntax=bash ts=2 sw=2 sts=2 sr noet 
+# vi: filetype=bash

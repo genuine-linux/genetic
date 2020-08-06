@@ -4,7 +4,7 @@ SUBDIRS = conf.d
 
 etcdir = $(sysconfdir)
 
-geneticetcdir = $(sysconfdir)/@PACKAGE@
+geneticetcdir = $(etcdir)/@PACKAGE@
 geneticetc_DATA = genetic.conf
 
 do_subst = sed -e 's,[@]sharedstatedir[@],$(sharedstatedir),g' \

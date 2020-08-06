@@ -804,6 +804,7 @@ XML-SAX-Expat:XML-SAX-Expat
 docbook2X:docbook2X
 ### ibus-table:ibus-table
 firefox:firefox
+midori:midori
 transmission:transmission
 protobuf:protobuf
 protobuf-c:protobuf-c

@@ -294,3 +294,6 @@ gen_bootstrap() {
 	enable_shadowed_passwords;
 	test_gen_gcc;
 }
+
+# vi: syntax=bash ts=2 sw=2 sts=2 sr noet 
+# vi: filetype=bash
