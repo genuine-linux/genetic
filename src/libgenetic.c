@@ -567,7 +567,7 @@ check_directory_structure() {
     if test ! -d "$dir"; then
       echolog_debug "$DEBUG Warning! Requested directory '$dir' was not found!";
       
-      $MKDIR -p $dir $>/dev/null;
+      $MKDIR -p $dir &>/dev/null;
 
       echolog_debug_verbose "$DEBUG Warning! Requested directory '$dir' has been created!";
     fi;
