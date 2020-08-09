@@ -149,6 +149,7 @@
 #ntfs-3g:ntfs-3g
 #smartmontools:smartmontools
 #libtasn1:libtasn1
+#p11-kit:p11-kit
 #nspr:nspr
 #nss:nss
 #make-ca:make-ca
@@ -257,7 +258,6 @@
 #busybox:busybox
 #dash:dash
 #mkinitramfs:mkinitramfs
-#intel-microcode:intel-microcode
 #debianutils:debianutils
 #rrdtool:rrdtool
 #lm-sensors:lm-sensors
@@ -1117,7 +1117,7 @@
 #enet:enet
 #gloox:gloox
 #libsodium:libsodium
-#miniupnpc:miniupnpc
+miniupnpc:miniupnpc
 #nvidia-texture-tools:nvidia-texture-tools
 #absl-py:absl-py
 #astunparse:astunparse
