@@ -475,6 +475,30 @@ done
   # $RM ../$name.target.man.files;
   echolog_debug "$DEBUG Finished linking man files!";
 
+	# Index of package debug files ### (debug) ###
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed debug files in '$name.dbg.files' ...";
+	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -e '\.la$' -e '\.a$' >../$name.dbg.files;
+
+	# Index of package debug links #
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed debug links in '$name.dbg.links' ...";
+	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -e '\.la$' -e '\.a$' > ../$name.dbg.links;
+
+	# Index of package debug dirs #
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed debug directories in '$name.dbg.dirs' ...";
+	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -e '\.la$' -e '\.a$' > ../$name.dbg.dirs;
+
+	# Index of package library files ### (lib) ###
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library files in '$name.lib.files' ...";
+	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' >../$name.lib.files;
+
+	# Index of package library links #
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library links in '$name.lib.links' ...";
+	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' > ../$name.lib.links;
+
+	# Index of package library dirs #
+	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library directories in '$name.lib.dirs' ...";
+	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib' > ../$name.lib.dirs;
+
 	# Index of package sysconfig files ### (etc) ###
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed sysconfig files in '$name.etc.files' ...";
 	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/etc/' >../$name.etc.files;
@@ -511,28 +535,39 @@ done
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed doc directories in '$name.doc.dirs' ...";
 	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/share/doc' > ../$name.doc.dirs;
 
-	# Index of package files (Exclude dev & lib files) ### (main) ###
+	# Index of package files (Exclude previous files) ### (main) ###
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed files in '$name.files' ...";
-	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | \
-		$GREP -v '/usr/include/' | $GREP -v '/etc/' | $GREP -v '/share/doc/' > ../$name.files;
+	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -v '/usr/include/' | $GREP -v '/etc/' | $GREP -v '/share/doc/' | $GREP -v '/lib/' | $GREP -v '/lib64/' | $GREP -v '\.a$' | $GREP -v '\.la$' > ../$name.files;
 
-	# Index of package linked files (Exclude dev & lib files) #
+	# Index of package linked files (Exclude previous files) #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed links in '$name.links' ...";
-	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | \
-	$GREP -v '/usr/include/' | $GREP -v '/etc/' | $GREP -v '/share/doc/' > ../$name.links;
+	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -v '/usr/include/' | $GREP -v '/etc/' | $GREP -v '/share/doc/' | $GREP -v '/lib/' | $GREP -v '/lib64/' | $GREP -v '\.a$' | $GREP -v '\.la$' > ../$name.links;
 
-	# Index of package directories (Exclude dev & lib files) #
+	# Index of package directories (Exclude previous directories) #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed directories in '$name.dirs' ...";
-	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | \
-	$GREP -v '/usr/include' | $GREP -v '/etc' | $GREP -v '/share/doc/' > ../$name.dirs;
+	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -v '/usr/include' | $GREP -v '/etc' | $GREP -v '/share/doc' | $GREP -v '/lib' | $GREP -v '/lib64' > ../$name.dirs;
 
 	stop_spinner $?;
 
 	# Back to $GENETIC_TMP/$source_package-$source_version/$name #
 	$CD $GENETIC_TMP/$source_package-$source_version/$name
 
+	# Get all required files to build genetic packages
+	GEN_PACKAGE_FILES="$name.etc.files $name.etc.dirs $name.etc.links $name.man.files $name.files $name.dirs $name.links";
+
+	# debug package disabled
+	if [ "$DISABLE_GEN_DEBUG" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ]; then
+		GEN_PACKAGE_FILES="$name.dbg.files $name.dbg.dirs $name.dbg.links $GEN_PACKAGE_FILES";
+	fi;
+
+	# library package disabled
+	if [ "$DISABLE_GEN_LIBRARY" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ] ; then
+		GEN_PACKAGE_FILES="$name.lib.files $name.lib.dirs $name.lib.links $GEN_PACKAGE_FILES";
+	fi;
+
 	# Check indexed $package.files has files #
-	GEN_FILES=$($CAT $name.etc.files $name.etc.dirs $name.etc.links $name.man.files $name.files $name.dirs $name.links);
+	GEN_FILES=$($CAT $GEN_PACKAGE_FILES);
+
 	if test -z "$GEN_FILES"; then
 		# Index files are empty #
 		echolog_debug_verbose "$DEBUG Package '$name $version' <$ROOTFS> index files are empty!";
@@ -550,6 +585,34 @@ done
 	### Finished building '$name-$version ($GENETIC_ARCH)' package ###
 
 	### Call libgenetic-packager.la functions for creating required packages ###
+
+	### Create '$name-$version.$GENETIC_ARCH.dbg.gen' library package ###
+	if [ "$DISABLE_GEN_DEBUG" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ]; then
+		echolog "$WARNING Warning! Genetic '${color_wht}$name $version${color_reset}' debug package will not be created!";
+	else
+		GEN_DBGFILES=$($CAT $name.dbg.files $name.dbg.dirs $name.dbg.links);
+		if test ! -z "$GEN_DBGFILES"; then # If debug files found create a debug package
+			echolog_debug_verbose "$DEBUG Installed files found in <$ROOTFS> for creating '$name $version' debug package!";
+			gen_create_debug_package "$name" "$version" "$bversion" "$GENETIC_ARCH";
+			errorcheck $? "gen_build_binary_package -> gen_create_debug_package";
+		else
+			echolog "$WARNING Warning! No installed files found in <${color_wht}$ROOTFS${color_reset}> for creating '${color_wht}$name $version${color_reset}' debug package!";
+		fi;
+	fi;
+
+	### Create 'lib$name-$version.$GENETIC_ARCH.lib.gen' library package if package is not a library ###
+	if [ "$DISABLE_GEN_LIBRARY" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ]; then
+		echolog "$WARNING Warning! Genetic '${color_wht}lib$name $version${color_reset}' library package will not be created!";
+	else
+		GEN_LIBFILES=$($CAT $name.lib.files $name.lib.dirs $name.lib.links);
+		if test ! -z "$GEN_LIBFILES"; then # If library files found create a library package
+			echolog_debug_verbose "$DEBUG Installed files found in <$ROOTFS> for creating 'lib$name $version' library package!";
+			gen_create_lib_package "$name" "$version" "$bversion" "$GENETIC_ARCH";
+			errorcheck $? "gen_build_binary_package -> gen_create_lib_package";
+		else
+			echolog "$WARNING Warning! No installed files found in <${color_wht}$ROOTFS${color_reset}> for creating '${color_wht}lib$name $version${color_reset}' library package!";
+		fi;
+	fi;
 
 	### Create '$name-$version.$GENETIC_ARCH.dev.gen' devel package ###
 	GEN_DEVFILES=$($CAT $name.dev.files $name.dev.dirs $name.dev.links);
@@ -569,14 +632,6 @@ done
 		errorcheck $? "gen_build_binary_package -> gen_create_doc_package";
 	else
 		echolog "$WARNING Warning! No installed files found in <${color_wht}$ROOTFS${color_reset}> for creating '${color_wht}$name $version${color_reset}' documentation package!";
-	fi;
-
-	### Create '$name-$version.$GENETIC_ARCH.dbg.gen' binary with debug symbols package ###
-	if [ "$DISABLE_GEN_DEBUG" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ]; then
-		echolog "$WARNING Warning! Debug package '${color_wht}$source_package $source_version${color_reset}' will not be created!";
-	else
-		gen_create_debug_package "$name" "$version" "$bversion" "$GENETIC_ARCH";
-		errorcheck $? "gen_build_binary_package -> gen_create_debug_package";
 	fi;
 
 	### Create '$name-$version.$GENETIC_ARCH.gen' binary package ###
@@ -612,7 +667,13 @@ done
 	### Finished building '$name-$version.$pkgarch.dbg.gen' binary debug package ###
 	if test -f "$GENETIC_PACKAGES/$name-$version.$pkgarch.dbg.gen"; then
 	DEBUG_PACKAGE_SIZE=$($DU $GENETIC_PACKAGES/$name-$version.$pkgarch.dbg.gen | $AWK '{print $1}');
-	echolog "$INFO Created binary debug package '${color_wht}$GENETIC_PACKAGES/$name-$version.$pkgarch.dbg.gen${color_reset}' size '${color_wht}$DEBUG_PACKAGE_SIZE Kb${color_reset}'!";
+	echolog "$INFO Created debug package '${color_wht}$GENETIC_PACKAGES/$name-$version.$pkgarch.dbg.gen${color_reset}' size '${color_wht}$DEBUG_PACKAGE_SIZE Kb${color_reset}'!";
+	fi;
+
+	### Finished building 'lib$name-$version.$pkgarch.gen' library package ###
+	if test -f "$GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen"; then
+	LIBRARY_PACKAGE_SIZE=$($DU $GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen | $AWK '{print $1}');
+	echolog "$INFO Created library package '${color_wht}$GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen${color_reset}' size '${color_wht}$LIBRARY_PACKAGE_SIZE Kb${color_reset}'!";
 	fi;
 
 	### Finished building '$name-$version.$pkgarch.gen' binary package ###
@@ -693,7 +754,7 @@ gen_clean_package() {
 
 	# Clean files #
 	$RM -rf $ROOTFS* &>/dev/null;
-	$RM -rf $package_to_clean* *.log PkgArch &>/dev/null;
+	$RM -rf $package_to_clean* *.log has_library* PkgArch &>/dev/null;
 
 	$CD ..;	$RM -rf *.content *.log &>/dev/null;
 

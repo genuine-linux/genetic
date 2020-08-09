@@ -769,9 +769,12 @@ gen_install_binary_package() {
                                 # Close genetic instance #
                                 exit_instance $true;
                         ;;
-                        glibc|ncurses) # CRITICAL BASE PACKAGES #
+                        glibc|ncurses|gcc|bash) # CRITICAL BASE PACKAGES #
                                 echolog "$WARNING Warning! Package $Package files will be directly overwritten but not uninstalled!";
                                 echolog "$WARNING Warning! ${color_ured}!!!You must reboot your system after installing $Package!!!${color_reset}";
+                        ;;
+                        libgenetic|genetic|zlib|file|diffutils|findutils|util-linux|coreutils|attr|acl|procps-ng|readline|gmp|mpfr|mpc|bzip2|flex|libtool|gettext|autogen|automakesed|gawk|psmisc) # CRITICAL BASE PACKAGES #
+                                echolog "$WARNING Warning! Package $Package files will be directly overwritten but not uninstalled!";
                         ;;
                         *) # NOT CRITICAL PACKAGES #
                                 # Delete old stored package data #
@@ -841,7 +844,7 @@ gen_install_binary_package() {
 
     # Check directories in '$Package.etc.dirs' index #
     #for dir in $($CAT $Package.etc.dirs | sed 's/[ \(\)]/\\&/g'); do
-    $CAT $Package.dirs | sed 's/[ \(\)]/\\&/g' | while read dir; do
+    $CAT $Package.etc.dirs | sed 's/[ \(\)]/\\&/g' | while read dir; do
       if test ! -d "${INSTDIR}$dir"; then
         echolog_debug "$DEBUG Creating '$Package $Version' ($Arch) sysconfig directory '${INSTDIR}$dir'.";
         $MKDIR -pv ${INSTDIR}$dir &>/dev/null;
@@ -859,7 +862,7 @@ gen_install_binary_package() {
 
     # Check files in '$Package.etc.files' index #
     #for file in $($CAT $Package.etc.files | sed 's/[ \(\)]/\\&/g'); do
-    $CAT $Package.files | sed 's/[ \(\)]/\\&/g' | while read file; do
+    $CAT $Package.etc.files | sed 's/[ \(\)]/\\&/g' | while read file; do
       if test ! -f "${INSTDIR}$file"; then
         echolog_debug "$DEBUG Creating '$Package $Version' ($Arch) sysconfig file '${INSTDIR}$file'.";
         $CP -a .$file ${INSTDIR}$file &>/dev/null;
@@ -878,7 +881,7 @@ gen_install_binary_package() {
 
     # Check links in '$Package.etc.links' index #
     #for link in $($CAT $Package.etc.links | sed 's/[ \(\)]/\\&/g'); do
-    $CAT $Package.links | sed 's/[ \(\)]/\\&/g' | while read link; do
+    $CAT $Package.etc.links | sed 's/[ \(\)]/\\&/g' | while read link; do
       if test ! -L "${INSTDIR}$link"; then
         echolog_debug "$DEBUG Creating '$Package $Version' ($Arch) sysconfig link '${INSTDIR}$link'.";
         $MV .$link ${INSTDIR}$link &>/dev/null;
@@ -892,6 +895,84 @@ gen_install_binary_package() {
 
   ### Check installed files, dirs, links ###
   echolog_debug "$DEBUG Verifying that all '$Package $Version' ($Arch) files are installed";
+
+# Check '$Package' index debug file list #
+  if test -f "$Package.dbg.files"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) debug file index '$Package.dbg.files'.";
+
+    # Check files in '$Package.dbg.files' index #
+    #for file in $($CAT $Package.dbg.files | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.dbg.files | sed 's/[ \(\)]/\\&/g' | while read file; do
+      check_file "${INSTDIR}${file}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${file}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) debug file index '$Package.dbg.files'.";
+  fi;
+
+  # Check '$Package' index debug directory list #
+  if test -f "$Package.dbg.dirs"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) debug directory index '$Package.dbg.dirs'.";
+
+    # Check directories in '$Package.dbg.dirs' index #
+    #for dir in $($CAT $Package.dbg.dirs | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.dbg.dirs | sed 's/[ \(\)]/\\&/g' | while read dir; do
+      check_dir "${INSTDIR}${dir}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${dir}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) debug directory index '$Package.dbg.dirs'.";
+  fi;
+
+  # Check '$Package' index debug link list #
+  if test -f "$Package.dbg.links"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) debug link index '$Package.dbg.links'.";
+
+    # Check links in '$Package.dbg.links' index #
+    #for link in $($CAT $Package.dbg.links | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.dbg.links | sed 's/[ \(\)]/\\&/g' | while read link; do
+      check_link "${INSTDIR}${link}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${link}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) debug link index '$Package.dbg.links'.";
+  fi;
+
+  # Check '$Package' index library file list #
+  if test -f "$Package.lib.files"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) library file index '$Package.lib.files'.";
+
+    # Check files in '$Package.lib.files' index #
+    #for file in $($CAT $Package.lib.files | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.lib.files | sed 's/[ \(\)]/\\&/g' | while read file; do
+      check_file "${INSTDIR}${file}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${file}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) library file index '$Package.lib.files'.";
+  fi;
+
+  # Check '$Package' index library directory list #
+  if test -f "$Package.lib.dirs"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) library directory index '$Package.lib.dirs'.";
+
+    # Check directories in '$Package.lib.dirs' index #
+    #for dir in $($CAT $Package.lib.dirs | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.lib.dirs | sed 's/[ \(\)]/\\&/g' | while read dir; do
+      check_dir "${INSTDIR}${dir}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${dir}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) library directory index '$Package.lib.dirs'.";
+  fi;
+
+  # Check '$Package' index library link list #
+  if test -f "$Package.lib.links"; then
+    echolog_debug "$DEBUG Found '$Package $Version' ($Arch) library link index '$Package.lib.links'.";
+
+    # Check links in '$Package.lib.links' index #
+    #for link in $($CAT $Package.lib.links | sed 's/[ \(\)]/\\&/g'); do
+    $CAT $Package.lib.links | sed 's/[ \(\)]/\\&/g' | while read link; do
+      check_link "${INSTDIR}${link}" || errorcheck $? "gen_install_binary_package [${INSTDIR}${link}] failed!";
+    done;
+  else
+    echolog_debug "$DEBUG Not found '$Package $Version' ($Arch) library link index '$Package.lib.links'.";
+  fi;
 
   # Check '$Package' index file list #
   if test -f "$Package.files"; then

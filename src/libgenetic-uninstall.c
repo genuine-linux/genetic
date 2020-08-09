@@ -74,6 +74,34 @@ gen_uninstall_packages() {
       for installed_link in $($CAT $CACHEDIR/$package_name/$Package.links); do
         check_link "${INSTDIR}${installed_link}" "$RM -f ${INSTDIR}${installed_link}";
       done;
+      
+      if test -f "$CACHEDIR/$package_name/$Package.lib.files"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' library files.";
+        for installed_lib_file in $($CAT $CACHEDIR/$package_name/$Package.lib.files); do
+          check_file "${INSTDIR}${installed_lib_file}" "$RM -f ${INSTDIR}$installed_lib_file";
+        done
+      fi
+
+      if test -f "$CACHEDIR/$package_name/$Package.lib.links"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' library links.";
+        for installed_lib_link in $($CAT $CACHEDIR/$package_name/$Package.lib.links); do
+          check_link "${INSTDIR}${installed_lib_link}" "$RM -f ${INSTDIR}${installed_lib_link}";
+        done
+      fi
+
+      if test -f "$CACHEDIR/$package_name/$Package.dbg.files"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' debug files.";
+        for installed_dbg_file in $($CAT $CACHEDIR/$package_name/$Package.dbg.files); do
+          check_file "${INSTDIR}${installed_dbg_file}" "$RM -f ${INSTDIR}$installed_dbg_file";
+        done
+      fi
+
+      if test -f "$CACHEDIR/$package_name/$Package.dbg.links"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' debug links.";
+        for installed_dbg_link in $($CAT $CACHEDIR/$package_name/$Package.dbg.links); do
+          check_link "${INSTDIR}${installed_dbg_link}" "$RM -f ${INSTDIR}${installed_dbg_link}";
+        done
+      fi
 
       ### PURGE SYSCONFIG FILES & LINKS ###
 

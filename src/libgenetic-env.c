@@ -99,6 +99,7 @@ load_core_variables() {
 	BZIP2="bzip2";
 	XZ="xz";
 	LDCONFIG="ldconfig";
+	LDD="ldd";
 	ACLOCAL="aclocal";
 	LIBTOOL="libtool";
 	LIBTOOLIZE="libtoolize";
@@ -323,6 +324,8 @@ $INFO Source Development Commands:
 	${color_bwht}[-c] --clean
 
 	${color_bwht}[-P] --packagepool-clean
+	
+	${color_bwht}[-F] --find-deps
 
 $INFO Package Management Commands:
 
@@ -424,6 +427,8 @@ $INFO Source Development Commands:
 	[-c] --clean
 	
 	[-P] --packagepool-clean
+	
+	[-F] --find-deps
 
 $INFO Package Management Commands:
 

@@ -83,7 +83,8 @@ if test ! -f "COPYING"; then
 fi;
 
 echo "Running automake ...";
-automake --add-missing
+#automake --add-missing
+automake -a -c -f
 automake m4/Makefile
 
 if test ! -f "src/gettext.h"; then

@@ -1,8 +1,8 @@
-CLEANFILES = genbuild.la genetic.la geninstall.la genuninstall.la libgenetic-bootimg.la libgenetic-bootstrap.la \
-						 libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la \
-						 libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la \
-						 libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la \
-						 libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la
+CLEANFILES = genbuild.so genetic.so geninstall.so genuninstall.so libgenetic-bootimg.so libgenetic-bootstrap.so \
+						 libgenetic-build.so libgenetic.so libgenetic-db.so libgenetic-debug.so libgenetic-env.so \
+						 libgenetic-gtk.so libgenetic-i18n.so libgenetic-install.so libgenetic-installer.so libgenetic-log.so \
+						 libgenetic-package.so libgenetic-packager.so libgenetic-repoclient.so libgenetic-repolocal.so \
+						 libgenetic-repos.so libgenetic-reposerver.so libgenetic-source.so libgenetic-uninstall.so libgenetic-unpack.so
 
 do_subst = sed -e 's,[@]sharedstatedir[@],$(sharedstatedir),g' \
 		-e 's,[@]localstatedir[@],$(localstatedir),g' \
@@ -28,91 +28,91 @@ include_HEADERS = genetic.h
 
 libgeneticdir = $(libdir)
 
-libgenetic_DATA = libgenetic-bootimg.la libgenetic-bootstrap.la libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la
+libgenetic_DATA = libgenetic-bootimg.so libgenetic-bootstrap.so libgenetic-build.so libgenetic.so libgenetic-db.so libgenetic-debug.so libgenetic-env.so libgenetic-gtk.so libgenetic-i18n.so libgenetic-install.so libgenetic-installer.so libgenetic-log.so libgenetic-package.so libgenetic-packager.so libgenetic-repoclient.so libgenetic-repolocal.so libgenetic-repos.so libgenetic-reposerver.so libgenetic-source.so libgenetic-uninstall.so libgenetic-unpack.so
 
-libgenetic.la: libgenetic.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic.c > libgenetic.la; \
-	chmod +x libgenetic.la
+libgenetic.so: libgenetic.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic.c > libgenetic.so; \
+	chmod +x libgenetic.so
 
-libgenetic-i18n.la: libgenetic-i18n.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-i18n.c > libgenetic-i18n.la; \
-	chmod +x libgenetic-i18n.la
+libgenetic-i18n.so: libgenetic-i18n.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-i18n.c > libgenetic-i18n.so; \
+	chmod +x libgenetic-i18n.so
 
-libgenetic-install.la: libgenetic-install.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-install.c > libgenetic-install.la; \
-	chmod +x libgenetic-install.la
+libgenetic-install.so: libgenetic-install.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-install.c > libgenetic-install.so; \
+	chmod +x libgenetic-install.so
 
-libgenetic-uninstall.la: libgenetic-uninstall.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-uninstall.c > libgenetic-uninstall.la; \
-	chmod +x libgenetic-uninstall.la
+libgenetic-uninstall.so: libgenetic-uninstall.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-uninstall.c > libgenetic-uninstall.so; \
+	chmod +x libgenetic-uninstall.so
 
-libgenetic-unpack.la: libgenetic-unpack.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-unpack.c > libgenetic-unpack.la; \
-	chmod +x libgenetic-unpack.la
+libgenetic-unpack.so: libgenetic-unpack.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-unpack.c > libgenetic-unpack.so; \
+	chmod +x libgenetic-unpack.so
 
-libgenetic-source.la: libgenetic-source.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-source.c > libgenetic-source.la; \
-	chmod +x libgenetic-source.la
+libgenetic-source.so: libgenetic-source.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-source.c > libgenetic-source.so; \
+	chmod +x libgenetic-source.so
 
-libgenetic-build.la: libgenetic-build.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-build.c > libgenetic-build.la; \
-	chmod +x libgenetic-build.la
+libgenetic-build.so: libgenetic-build.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-build.c > libgenetic-build.so; \
+	chmod +x libgenetic-build.so
 
-libgenetic-db.la: libgenetic-db.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-db.c > libgenetic-db.la; \
-	chmod +x libgenetic-db.la
+libgenetic-db.so: libgenetic-db.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-db.c > libgenetic-db.so; \
+	chmod +x libgenetic-db.so
 
-libgenetic-debug.la: libgenetic-debug.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-debug.c > libgenetic-debug.la; \
-	chmod +x libgenetic-debug.la
+libgenetic-debug.so: libgenetic-debug.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-debug.c > libgenetic-debug.so; \
+	chmod +x libgenetic-debug.so
 
-libgenetic-env.la: libgenetic-env.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-env.c > libgenetic-env.la; \
-	chmod +x libgenetic-env.la
+libgenetic-env.so: libgenetic-env.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-env.c > libgenetic-env.so; \
+	chmod +x libgenetic-env.so
 
-libgenetic-log.la: libgenetic-log.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-log.c > libgenetic-log.la; \
-	chmod +x libgenetic-log.la
+libgenetic-log.so: libgenetic-log.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-log.c > libgenetic-log.so; \
+	chmod +x libgenetic-log.so
 
-libgenetic-package.la: libgenetic-package.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-package.c > libgenetic-package.la; \
-	chmod +x libgenetic-package.la
+libgenetic-package.so: libgenetic-package.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-package.c > libgenetic-package.so; \
+	chmod +x libgenetic-package.so
 
-libgenetic-packager.la: libgenetic-packager.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-packager.c > libgenetic-packager.la; \
-	chmod +x libgenetic-packager.la
+libgenetic-packager.so: libgenetic-packager.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-packager.c > libgenetic-packager.so; \
+	chmod +x libgenetic-packager.so
 
-libgenetic-bootimg.la: libgenetic-bootimg.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-bootimg.c > libgenetic-bootimg.la; \
-	chmod +x libgenetic-bootimg.la
+libgenetic-bootimg.so: libgenetic-bootimg.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-bootimg.c > libgenetic-bootimg.so; \
+	chmod +x libgenetic-bootimg.so
 
-libgenetic-bootstrap.la: libgenetic-bootstrap.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-bootstrap.c > libgenetic-bootstrap.la; \
-	chmod +x libgenetic-bootstrap.la
+libgenetic-bootstrap.so: libgenetic-bootstrap.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-bootstrap.c > libgenetic-bootstrap.so; \
+	chmod +x libgenetic-bootstrap.so
 
-libgenetic-gtk.la: libgenetic-gtk.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-gtk.c > libgenetic-gtk.la; \
-	chmod +x libgenetic-gtk.la
+libgenetic-gtk.so: libgenetic-gtk.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-gtk.c > libgenetic-gtk.so; \
+	chmod +x libgenetic-gtk.so
 
-libgenetic-installer.la: libgenetic-installer.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-installer.c > libgenetic-installer.la; \
-	chmod +x libgenetic-installer.la
+libgenetic-installer.so: libgenetic-installer.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-installer.c > libgenetic-installer.so; \
+	chmod +x libgenetic-installer.so
 
-libgenetic-repos.la: libgenetic-repos.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-repos.c > libgenetic-repos.la; \
-	chmod +x libgenetic-repos.la
+libgenetic-repos.so: libgenetic-repos.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-repos.c > libgenetic-repos.so; \
+	chmod +x libgenetic-repos.so
 
-libgenetic-reposerver.la: libgenetic-reposerver.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-reposerver.c > libgenetic-reposerver.la; \
-	chmod +x libgenetic-reposerver.la
+libgenetic-reposerver.so: libgenetic-reposerver.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-reposerver.c > libgenetic-reposerver.so; \
+	chmod +x libgenetic-reposerver.so
 
-libgenetic-repolocal.la: libgenetic-repolocal.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-repolocal.c > libgenetic-repolocal.la; \
-	chmod +x libgenetic-repolocal.la
+libgenetic-repolocal.so: libgenetic-repolocal.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-repolocal.c > libgenetic-repolocal.so; \
+	chmod +x libgenetic-repolocal.so
 
-libgenetic-repoclient.la: libgenetic-repoclient.c Makefile
-	$(do_subst) < $(srcdir)/libgenetic-repoclient.c > libgenetic-repoclient.la; \
-	chmod +x libgenetic-repoclient.la
+libgenetic-repoclient.so: libgenetic-repoclient.c Makefile
+	$(do_subst) < $(srcdir)/libgenetic-repoclient.c > libgenetic-repoclient.so; \
+	chmod +x libgenetic-repoclient.so
 
 genbuild$(EXEEXT): genbuild.c Makefile
 	$(do_subst) < $(srcdir)/genbuild.c > genbuild$(EXEEXT); \
@@ -130,5 +130,5 @@ genetic$(EXEEXT): genetic.c Makefile
 	$(do_subst) < $(srcdir)/genetic.c > genetic$(EXEEXT); \
 	chmod +x genetic$(EXEEXT);
 
-all-local: libgenetic-bootimg.la libgenetic-bootstrap.la libgenetic-build.la libgenetic.la libgenetic-db.la libgenetic-debug.la libgenetic-env.la libgenetic-gtk.la libgenetic-i18n.la libgenetic-install.la libgenetic-installer.la libgenetic-log.la libgenetic-package.la libgenetic-packager.la libgenetic-repoclient.la libgenetic-repolocal.la libgenetic-repos.la libgenetic-reposerver.la libgenetic-source.la libgenetic-uninstall.la libgenetic-unpack.la \
+all-local: libgenetic-bootimg.so libgenetic-bootstrap.so libgenetic-build.so libgenetic.so libgenetic-db.so libgenetic-debug.so libgenetic-env.so libgenetic-gtk.so libgenetic-i18n.so libgenetic-install.so libgenetic-installer.so libgenetic-log.so libgenetic-package.so libgenetic-packager.so libgenetic-repoclient.so libgenetic-repolocal.so libgenetic-repos.so libgenetic-reposerver.so libgenetic-source.so libgenetic-uninstall.so libgenetic-unpack.so \
 	genbuild$(EXEEXT) genetic$(EXEEXT) geninstall$(EXEEXT) genuninstall$(EXEEXT)

@@ -61,9 +61,9 @@ main() {
     else
       # Define $ACTION_OPTIONS #
       ACTION_OPTIONS=$($GETOPT \
-         -l "help,version,verbose,silent,force,rebuildb,color,print-architecture,noarch,noscripts,autotools,purge,update,bootstrap,installer,packagepool-clean,disable-gen-orig,disable-gen-source,disable-gen-debug,disable-gen-all,disable-distclean,disable-clean,repo:,uninstall:,install:,list:,listfiles:,unpack:,unpackdir:,build,source:,clean,configure-self-dir,configure:,packages:,prefix:,admindir:,instdir:" \
+         -l "find-deps,help,version,verbose,silent,force,rebuildb,color,print-architecture,noarch,noscripts,autotools,purge,update,bootstrap,installer,packagepool-clean,disable-gen-orig,disable-gen-source,disable-gen-debug,disable-gen-library,disable-gen-all,disable-distclean,disable-clean,repo:,uninstall:,install:,list:,listfiles:,unpack:,unpackdir:,build,source:,clean,configure-self-dir,configure:,packages:,prefix:,admindir:,instdir:" \
          -n "$0" \
-         -o hIvVBbcCPdDpRr:u:i:l:L:U:s: \
+         -o FhIvVBbcCPdDpRr:u:i:l:L:U:s: \
          -- "$@")
 
       eval set -- "$ACTION_OPTIONS"
@@ -154,10 +154,14 @@ main() {
           --disable-gen-source) # Disable sourcepackage.src.gen creation while building #
             DISABLE_GEN_SOURCE="yes"; shift;
           ;;
+          --disable-gen-library) # Disable sourcepackage.src.gen creation while building #
+            DISABLE_GEN_LIBRARY="yes"; shift;
+          ;;
           -d|--disable-gen-all) # Disable sourcepackage.src.gen creation while building #
             DISABLE_GEN_ORIG="yes";
             DISABLE_GEN_DEBUG="yes";
             DISABLE_GEN_SOURCE="yes";
+            DISABLE_GEN_LIBRARY="yes";
             DISABLE_GEN_ALL="yes"; shift;
           ;;
           -D|--disable-distclean) # Disable distclean before build #
@@ -176,6 +180,10 @@ main() {
           -P|--packagepool-clean) # PackagePool Clean #
             startmsg;
             gen_clean_packagepool; shift;
+          ;;
+          -F|--find-deps)
+            startmsg;
+            gen_find_package_deps; shift;
           ;;
           -b|--build) # <build> genetic packages from "sourcepackage SrcInfo file" #
             startmsg;

@@ -18,7 +18,7 @@ ENABLE_VERBOSE="no";
 ### Modify with care! ###
 
 # System Log directory #
-LOGDIR="@localstatedir@/@PACKAGE@";
+LOGDIR="@localstatedir@/log/@PACKAGE@";
 
 # genetic Log file name #
 LOGFILE="@PACKAGE@.log";

@@ -34,39 +34,39 @@ fi;
 # Load genetic Libraries #
 
 # Load genetic Environment Definitions #
-source $GENETIC_LIB/libgenetic-env.la;
-source $GENETIC_LIB/libgenetic-i18n.la;
+source $GENETIC_LIB/libgenetic-env.so;
+source $GENETIC_LIB/libgenetic-i18n.so;
 
 # Load genetic Logger Functions #
-source $GENETIC_LIB/libgenetic-log.la;
+source $GENETIC_LIB/libgenetic-log.so;
 
 # Load genetic Core Functions #
-source $GENETIC_LIB/libgenetic.la;
+source $GENETIC_LIB/libgenetic.so;
 
 # Load genetic environment debug #
-source $GENETIC_LIB/libgenetic-debug.la;
+source $GENETIC_LIB/libgenetic-debug.so;
 
 # Load genetic Package Manager Functions #
-source $GENETIC_LIB/libgenetic-db.la;
-source $GENETIC_LIB/libgenetic-package.la;
-source $GENETIC_LIB/libgenetic-source.la;
-source $GENETIC_LIB/libgenetic-build.la;
-source $GENETIC_LIB/libgenetic-packager.la;
-source $GENETIC_LIB/libgenetic-uninstall.la;
-source $GENETIC_LIB/libgenetic-install.la;
-source $GENETIC_LIB/libgenetic-unpack.la;
+source $GENETIC_LIB/libgenetic-db.so;
+source $GENETIC_LIB/libgenetic-package.so;
+source $GENETIC_LIB/libgenetic-source.so;
+source $GENETIC_LIB/libgenetic-build.so;
+source $GENETIC_LIB/libgenetic-packager.so;
+source $GENETIC_LIB/libgenetic-uninstall.so;
+source $GENETIC_LIB/libgenetic-install.so;
+source $GENETIC_LIB/libgenetic-unpack.so;
 
 # Load genetic Repo Functions #
-source $GENETIC_LIB/libgenetic-repos.la;
+source $GENETIC_LIB/libgenetic-repos.so;
 
 # Load genetic Bootstrap Genuine system #
-source $GENETIC_LIB/libgenetic-bootstrap.la;
+source $GENETIC_LIB/libgenetic-bootstrap.so;
 
 # Load genetic GTK GUI (zenity) #
-source $GENETIC_LIB/libgenetic-gtk.la;
+source $GENETIC_LIB/libgenetic-gtk.so;
 
 # Load genetic Installer #
-source $GENETIC_LIB/libgenetic-installer.la;
+source $GENETIC_LIB/libgenetic-installer.so;
 
 # Start '@PACKAGE@' #
 
