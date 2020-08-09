@@ -21,7 +21,7 @@ gen_find_package_deps() {
 
 	for real_file in $($CAT *.files); do
 	if $FILE $real_file | $GREP -q dynamically; then
-		echolog_debug "$DEBUG Checking $check_file depends: "
+		echolog_debug "$DEBUG Checking $real_file depends: "
 		deps=$($LDD $real_file | $AWK '{print $1}' | $SORT | $UNIQ)
 		for dep in $deps; do
 			genetic_packages=$(list_installed_files "$dep" | $GREP -v Genuine | $AWK '{print $2}' | $SORT | $UNIQ)
@@ -35,12 +35,14 @@ gen_find_package_deps() {
 			done
 		done
 		if [ ! -z "$all_deps" ]; then
+			echologn "$INFO Package dependencies found: "
 			$ECHO $all_deps | $SORT | $UNIQ | $AWK -v ORS=" " '{print $0}'
+			$ECHO ""
 		else
-			echolog_debug "$DEBUG No genetic depends found for $check_file!"
+			echolog_debug "$DEBUG No genetic depends found for $real_file!"
 		fi
 	else
-		echolog_debug "$ERROR $check_file is not dynamically linked."
+		echolog_debug "$ERROR $real_file is not dynamically linked."
 	fi
 	done
 }
@@ -158,82 +160,83 @@ gen_create_source_package() {
 gen_create_lib_package() {
 	# Parameters
 	name="$1";
-	version="$2";
-	bversion="$3";
-	pkgarch="$4";
+	libname="$2";
+	version="$3";
+	bversion="$4";
+	pkgarch="$5";
 
 	echolog_debug "$DEBUG ================== %%% genetic %%% ==================";
-	echolog_debug "$DEBUG Starting 'gen_create_lib_package(lib$name,$version,$pkgarch)'!";
+	echolog_debug "$DEBUG Starting 'gen_create_lib_package($libname,$version,$pkgarch)'!";
 	echolog_debug "$DEBUG =====================================================";
 
 	### Create library package ###
-	start_spinner "Creating library package '${color_wht}lib$name-$version.$pkgarch.gen${color_reset}'"
+	start_spinner "Creating library package '${color_wht}$libname-$version.$pkgarch.gen${color_reset}'"
 
 	# Change to '$GENETIC_TMP/$source_package-$source_version' directory #
 	$CD $GENETIC_TMP/$source_package-$source_version;
 
-	### Use installed files to create package 'lib$name-$version.$pkgarch.gen' ###
-	echolog_debug "$DEBUG Use installed files to create devel package 'lib$name-$version.$pkgarch.gen'.";
+	### Use installed files to create package '$libname-$version.$pkgarch.gen' ###
+	echolog_debug "$DEBUG Use installed files to create devel package '$libname-$version.$pkgarch.gen'.";
 
 	# Create a temp directory #
-	echolog_debug "$DEBUG Creating temporary directory 'lib$name.tmp'. It's needed to install package files.";
-	check_dir "lib$name.tmp" "$RM -rf lib$name.tmp";
+	echolog_debug "$DEBUG Creating temporary directory '$libname.tmp'. It's needed to install package files.";
+	check_dir "$libname.tmp" "$RM -rf $libname.tmp";
 
-	$MKDIR -p lib$name.tmp;
+	$MKDIR -p $libname.tmp;
 
 	### Write new 'lib$package_name' 'Info' file ###
-	echolog_debug "$DEBUG Writing a new 'lib$name $version' ($pkgarch) package 'Info' file ...";
-	$ECHO "# Package <lib$name> info.
+	echolog_debug "$DEBUG Writing a new '$libname $version' ($pkgarch) package 'Info' file ...";
+	$ECHO "# Package <$libname> info.
 
 original_name=$source_package
-name=lib$name
+name=$libname
 version=$version
-package=$name-$version
+package=$libname-$version
 depends=\"$depends\"
 installbefore=
 installafter=
-replaces=$name
-" > lib$name.tmp/Info;
+replaces=$libname
+" > $libname.tmp/Info;
 	### End 'lib$package_name' 'Info' file ###
 
 	# Copy necesary package files
-	echolog_debug "$DEBUG Copying files: '$name.*', 'PkgArch' to 'lib$name.tmp' directory."
+	echolog_debug "$DEBUG Copying files: '$name.*', 'PkgArch' to '$libname.tmp' directory."
 
-	$CP -a $name/${GEN_BUILD_VERSION_PREFIX}${bversion} $name/PkgArch lib$name.tmp/
-	$CP -a $name/$name.lib.files lib$name.tmp/lib$name.lib.files
-	$CP -a $name/$name.lib.dirs lib$name.tmp/lib$name.lib.dirs
-	$CP -a $name/$name.lib.links lib$name.tmp/lib$name.lib.links
+	$CP -a $name/${GEN_BUILD_VERSION_PREFIX}${bversion} $name/PkgArch $libname.tmp/
+	$CP -a $name/$name.lib.files $libname.tmp/$libname.lib.files
+	$CP -a $name/$name.lib.dirs $libname.tmp/$libname.lib.dirs
+	$CP -a $name/$name.lib.links $libname.tmp/$libname.lib.links
 	errorcheck $? "gen_create_lib_package";
 
 	# Create scripts: PostInst PreInst PostRemv PreRemv #
 	# genetic will fail if these files are not found #
 	echolog_debug "$DEBUG Creating scripts: PostInst, PreInst, PostRemv, PreRemv.";
 	for script_file in PostInst PreInst PostRemv PreRemv; do
-		if test ! -f "lib$name.tmp/$script_file"; then
-			$ECHO '#!/bin/bash' > lib$name.tmp/$script_file;
+		if test ! -f "$libname.tmp/$script_file"; then
+			$ECHO '#!/bin/bash' > $libname.tmp/$script_file;
 		fi;
 	done
 
 	# Moving built files to new directory 
-	echolog_debug "$DEBUG Moving '$name $version' library installed files to 'lib$name.tmp' ...";
+	echolog_debug "$DEBUG Moving '$name $version' library installed files to '$libname.tmp' ...";
 
 	# Create header indexed directories #
-	for libdir in $($CAT lib$name.tmp/lib$name.lib.dirs); do
+	for libdir in $($CAT $libname.tmp/$libname.lib.dirs); do
 		if test ! -z "$libdir"; then
-			$MKDIR -pv lib$name.tmp/$ROOTFS/$libdir &>/dev/null
+			$MKDIR -pv $libname.tmp/$ROOTFS/$libdir &>/dev/null
 		fi;
 	done;
 
-	for libfile in $($CAT lib$name.tmp/lib$name.lib.files lib$name.tmp/lib$name.lib.links); do
+	for libfile in $($CAT $libname.tmp/$libname.lib.files $libname.tmp/$libname.lib.links); do
 		if test ! -z "$libfile"; then
-			$MV $name/$ROOTFS/$libfile lib$name.tmp/$ROOTFS/$libfile &>/dev/null;
+			$MV $name/$ROOTFS/$libfile $libname.tmp/$ROOTFS/$libfile &>/dev/null;
 		fi;
 	done;
 
-	$CD lib$name.tmp/$ROOTFS;
+	$CD $libname.tmp/$ROOTFS;
 
 	# Strip debug symbols from binaries and libraries #
-	echologn_debug "$DEBUG Stripping debug symbols from 'lib$name $version' programs and libraries ...";
+	echologn_debug "$DEBUG Stripping debug symbols from '$libname $version' programs and libraries ...";
 
 	for dir in bin sbin usr/bin usr/sbin usr/local/bin usr/local/sbin opt/bin usr/libexec; do
 		if test -d "$dir"; then
@@ -257,21 +260,21 @@ replaces=$name
 	echolog_debug "$DEBUG Deleting unnecesary files and directories '$ROOTFS', 'Rules', 'files' and 'patches' ...";
 	$CD ..;	$RM -rf $ROOTFS Rules files patches &>/dev/null
 
-	echolog_debug "$DEBUG Create library package 'lib$name-$version.$pkgarch.gen'.";
-	$TAR cfvj $GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen * &> ../lib$name-$version.$pkgarch.content
+	echolog_debug "$DEBUG Create library package '$libname-$version.$pkgarch.gen'.";
+	$TAR cfvj $GENETIC_PACKAGES/$libname-$version.$pkgarch.gen * &> ../$libname-$version.$pkgarch.content
 
 	# End work_spinner #
 	stop_spinner $?;
 
 	# Delete temporary directory
-	echolog_debug_verbose "$DEBUG Deleting temporary working directory 'lib$name.tmp'."; 
-	$CD ..; $RM -rf lib$name.tmp &> /dev/null
+	echolog_debug_verbose "$DEBUG Deleting temporary working directory '$libname.tmp'."; 
+	$CD ..; $RM -rf $libname.tmp &> /dev/null
 
 	# Change to $name directory #
 	$CD $name;
 
 	# Let gen_create_binary_package function know about creation of library packages #
-	$TOUCH has_library_lib$name
+	$TOUCH has_library_$libname
 
 	return $true;
 }

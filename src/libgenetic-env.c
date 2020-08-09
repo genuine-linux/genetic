@@ -100,6 +100,7 @@ load_core_variables() {
 	XZ="xz";
 	LDCONFIG="ldconfig";
 	LDD="ldd";
+	FILE="file";
 	ACLOCAL="aclocal";
 	LIBTOOL="libtool";
 	LIBTOOLIZE="libtoolize";

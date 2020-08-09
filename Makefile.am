@@ -75,7 +75,7 @@ CLEANDEVELFILES = compile configure depcomp genetic.h ar-lib \
 CLEANBUILDFILES = config.log etc/genetic.conf etc/conf.d/repos.conf \
 	etc/conf.d/arch.conf etc/conf.d/build.conf etc/conf.d/db.conf \
 	etc/conf.d/editor.conf etc/conf.d/log.conf etc/conf.d/release.conf \
-	etc/conf.d/installer.conf src/*.la \
+	etc/conf.d/installer.conf src/*.so \
 	`find $(srcdir) -iname "stamp-h1"` \
 	`find $(srcdir) -iname "stamp-po"` \
 	`find $(srcdir) -iname "Makefile"`
@@ -152,6 +152,7 @@ install-data-hook:
 	$(_install_file_) genuine-installer.desktop \
 		$(DESTDIR)$(datarootdir)/applications/genuine-installer.desktop; \
 	cp -rfv etc/repos $(DESTDIR)$(sysconfdir)/@PACKAGE@/; \
+	cp -rfv etc/bootstrap $(DESTDIR)$(sysconfdir)/@PACKAGE@/; \
 	echo "Setting up <$(prefix)> permissions to <$(USER):$(GROUP)> ..."; \
 	chown -R $(USER):$(GROUP) $(DESTDIR)$(localstatedir)/log/@PACKAGE@; \
 	chown -R $(USER):$(GROUP) $(DESTDIR)$(localstatedir)/run/lock/@PACKAGE@; \

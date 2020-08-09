@@ -485,15 +485,17 @@ done
 
 	# Index of package debug dirs #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed debug directories in '$name.dbg.dirs' ...";
-	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -e '\.la$' -e '\.a$' > ../$name.dbg.dirs;
+	$FIND . -type f -name '*\.la' -exec dirname {} \; | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $SORT | $UNIQ > ../$name.dbg.dirs;
+	$FIND . -type f -name '*\.a' -exec dirname {} \; | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $SORT | $UNIQ >> ../$name.dbg.dirs;
+	#$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP -e '\.la$' -e '\.a$' | $AWK -F'/' '{print $0-$NF}' > ../$name.dbg.dirs;
 
 	# Index of package library files ### (lib) ###
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library files in '$name.lib.files' ...";
-	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' >../$name.lib.files;
+	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' >../$name.lib.files;
 
 	# Index of package library links #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library links in '$name.lib.links' ...";
-	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' > ../$name.lib.links;
+	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' > ../$name.lib.links;
 
 	# Index of package library dirs #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library directories in '$name.lib.dirs' ...";
@@ -601,16 +603,34 @@ done
 	fi;
 
 	### Create 'lib$name-$version.$GENETIC_ARCH.lib.gen' library package if package is not a library ###
+	libname="lib$name";
+
+	# Fix some packages with "lib" in it's name
+	case "$name" in
+		libre*|*libre) DISABLE_GEN_LIBRARY="no"
+		;;
+		lib*|Lib*|LIB*) DISABLE_GEN_LIBRARY="yes"
+			libname="$name"
+		;;
+		glibc) libname="libc"
+		;;
+		zlib) libname="libz"
+		;;
+	esac
+
 	if [ "$DISABLE_GEN_LIBRARY" == "yes" ] || [ "$DISABLE_GEN_ALL" == "yes" ]; then
-		echolog "$WARNING Warning! Genetic '${color_wht}lib$name $version${color_reset}' library package will not be created!";
+		if [ "$libname" == "$name" ]; then
+			echolog "$WARNING Warning! Genetic '${color_wht}$libname $version${color_reset}' is a library package already!";
+		fi
+		echolog "$WARNING Warning! Genetic '${color_wht}$libname $version${color_reset}' library package creation disabled!";
 	else
 		GEN_LIBFILES=$($CAT $name.lib.files $name.lib.dirs $name.lib.links);
 		if test ! -z "$GEN_LIBFILES"; then # If library files found create a library package
-			echolog_debug_verbose "$DEBUG Installed files found in <$ROOTFS> for creating 'lib$name $version' library package!";
-			gen_create_lib_package "$name" "$version" "$bversion" "$GENETIC_ARCH";
+			echolog_debug_verbose "$DEBUG Installed files found in <$ROOTFS> for creating '$libname $version' library package!";
+			gen_create_lib_package "$name" "$libname" "$version" "$bversion" "$GENETIC_ARCH";
 			errorcheck $? "gen_build_binary_package -> gen_create_lib_package";
 		else
-			echolog "$WARNING Warning! No installed files found in <${color_wht}$ROOTFS${color_reset}> for creating '${color_wht}lib$name $version${color_reset}' library package!";
+			echolog "$WARNING Warning! No installed files found in <${color_wht}$ROOTFS${color_reset}> for creating '${color_wht}$libname $version${color_reset}' library package!";
 		fi;
 	fi;
 
@@ -670,10 +690,12 @@ done
 	echolog "$INFO Created debug package '${color_wht}$GENETIC_PACKAGES/$name-$version.$pkgarch.dbg.gen${color_reset}' size '${color_wht}$DEBUG_PACKAGE_SIZE Kb${color_reset}'!";
 	fi;
 
-	### Finished building 'lib$name-$version.$pkgarch.gen' library package ###
-	if test -f "$GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen"; then
-	LIBRARY_PACKAGE_SIZE=$($DU $GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen | $AWK '{print $1}');
-	echolog "$INFO Created library package '${color_wht}$GENETIC_PACKAGES/lib$name-$version.$pkgarch.gen${color_reset}' size '${color_wht}$LIBRARY_PACKAGE_SIZE Kb${color_reset}'!";
+	### Finished building '$libname-$version.$pkgarch.gen' library package ###
+	if [ "$libname" != "$name" ]; then
+		if test -f "$GENETIC_PACKAGES/$libname-$version.$pkgarch.gen"; then
+		LIBRARY_PACKAGE_SIZE=$($DU $GENETIC_PACKAGES/$libname-$version.$pkgarch.gen | $AWK '{print $1}');
+		echolog "$INFO Created library package '${color_wht}$GENETIC_PACKAGES/$libname-$version.$pkgarch.gen${color_reset}' size '${color_wht}$LIBRARY_PACKAGE_SIZE Kb${color_reset}'!";
+		fi;
 	fi;
 
 	### Finished building '$name-$version.$pkgarch.gen' binary package ###
