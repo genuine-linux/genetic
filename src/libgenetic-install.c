@@ -727,10 +727,10 @@ gen_install_binary_package() {
   # Select binary package to be installed #
   echolog "$INFO Selecting binary package '${color_wht}$PACKAGE${color_reset}' to be installed.";
 
+  export CACHEDIR_ORIG="$CACHEDIR";
   if test "$INSTDIR" != "/"; then # If --instdir is used, change CACHEDIR value
     echolog_debug "$WARNING Warning! Changing genetic CACHEDIR to $INSTDIR$CACHEDIR!";
     echolog "$WARNING Warning! Changing genetic CACHEDIR to $INSTDIR$CACHEDIR!";
-    export CACHEDIR_ORIG="$CACHEDIR";
     export CACHEDIR="$INSTDIR$CACHEDIR";
   fi;
 
@@ -769,11 +769,11 @@ gen_install_binary_package() {
                                 # Close genetic instance #
                                 exit_instance $true;
                         ;;
-                        glibc|ncurses|gcc|bash) # CRITICAL BASE PACKAGES #
+                        glibc|libc|ncurses|gcc|bash) # CRITICAL BASE PACKAGES #
                                 echolog "$WARNING Warning! Package $Package files will be directly overwritten but not uninstalled!";
                                 echolog "$WARNING Warning! ${color_ured}!!!You must reboot your system after installing $Package!!!${color_reset}";
                         ;;
-                        libgenetic|genetic|zlib|file|diffutils|findutils|util-linux|coreutils|attr|acl|procps-ng|readline|gmp|mpfr|mpc|bzip2|flex|libtool|gettext|autogen|automakesed|gawk|psmisc) # CRITICAL BASE PACKAGES #
+                        libgenetic|genetic|zlib|libz|file|diffutils|findutils|util-linux|coreutils|attr|acl|procps-ng|readline|gmp|mpfr|mpc|bzip2|flex|libtool|gettext|autogen|automakesed|gawk|psmisc) # CRITICAL BASE PACKAGES #
                                 echolog "$WARNING Warning! Package $Package files will be directly overwritten but not uninstalled!";
                         ;;
                         *) # NOT CRITICAL PACKAGES #

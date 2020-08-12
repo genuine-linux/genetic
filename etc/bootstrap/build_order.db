@@ -73,6 +73,7 @@
 #python2-docutils:python2-docutils
 #python-defaults:python-defaults
 #python2-defaults:python2-defaults
+#python2-distutils-extra:python2-distutils-extra
 #numpy-python3:numpy-python3
 #numpy-python2:numpy-python2
 #kmod:kmod
@@ -773,6 +774,7 @@
 #cldr-emoji-annotation:cldr-emoji-annotation
 #ucd:ucd
 #ibus:ibus
+#scim:scim
 #connman:connman
 #efl:efl
 #python-efl:python-efl
@@ -781,12 +783,11 @@
 #rage:rage
 #econnman:econnman
 #ephoto:ephoto
-#######epour:epour
+#epour:epour
 #evisum:evisum
 #extra:extra
 ####enventor:enventor
-#####eflete:eflete
-####edi:edi
+#edi:edi
 #E17gtk:E17gtk
 #### EDITORS #
 #nano:nano
@@ -980,6 +981,8 @@
 #aspell6-en:aspell6-en
 #aspell6-es:aspell6-es
 #aspell6-ca:aspell6-ca
+#hunspell:hunspell
+#gamin:gamin
 #libreoffice:libreoffice
 ###### DEVEL ###
 #faber:faber
@@ -988,6 +991,7 @@
 #bashdb:bashdb
 #configobj:configobj
 #terminator:terminator
+#codeblocks:codeblocks
 #### CONTAINERS ####
 #docker:docker
 #x11docker:x11docker
@@ -1060,6 +1064,8 @@
 ##pcp:pcp
 ### cockpit:cockpit # requires systemd
 #### EMULATORS #
+#freealut:freealut
+#tinyxml:tinyxml
 #dosbox:dosbox
 #scummvm:scummvm
 #RetroArch:RetroArch
@@ -1068,6 +1074,14 @@
 #libgd:libgd
 #leveldb:leveldb
 #minetestmapper:minetestmapper
+#ioq3:ioq3
+#astromenace:astromenace
+#loki:loki
+#glfw:glfw
+#ode:ode
+#OpenSceneGraph:OpenSceneGraph
+#cegui:cegui
+#zeroballistics:zeroballistics
 #### JUPYTER ###
 #pyparsing:pyparsing
 #cycler:cycler
@@ -1117,7 +1131,7 @@
 #enet:enet
 #gloox:gloox
 #libsodium:libsodium
-miniupnpc:miniupnpc
+#miniupnpc:miniupnpc
 #nvidia-texture-tools:nvidia-texture-tools
 #absl-py:absl-py
 #astunparse:astunparse

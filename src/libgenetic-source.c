@@ -246,7 +246,7 @@ gen_source_package() {
 		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
 		$MKDIR build.cmake
 		$CD build.cmake
-		$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX ../ &> ../../$package_name.src-cmake-$BUILDLOG;
+		$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS ../ &> ../../$package_name.src-cmake-$BUILDLOG;
 		stop_spinner $?;
 
 		TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/build.cmake/Makefile";
@@ -304,7 +304,7 @@ gen_source_package() {
 		# meson configure #
 		mkdir build.meson &&
 		cd build.meson &&
-		$MESON --prefix=$GEN_PKGRULES_PREFIX ../ &> ../../$package_name.src-meson-$BUILDLOG;
+		$MESON --prefix=$GEN_PKGRULES_PREFIX $CONFIGURE_OPTIONS ../ &> ../../$package_name.src-meson-$BUILDLOG;
 		stop_spinner $?
 	fi
 
@@ -407,7 +407,13 @@ if test -f \"CMakeLists.txt\"; then
 	rm -rf build.cmake &&
 	mkdir build.cmake &&
 	cd build.cmake &&
-	$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX -DCMAKE_BUILD_TYPE=Release ../;
+	$CMAKE -DCMAKE_INSTALL_PREFIX=$GEN_PKGRULES_PREFIX \\
+		-DCMAKE_BUILD_TYPE=Release \\" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+		if [ "$CONFIGURE_OPTIONS" != "" ]; then
+$ECHO "		$CONFIGURE_OPTIONS \\" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+		fi
+$ECHO "      -Wno-dev \\
+		../;
 fi;
 " >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
   fi;
@@ -420,7 +426,11 @@ if test -f \"meson.build\"; then
 	echo \" --- Meson Configure <\$name (\$version)> ---\";
 	mkdir build.meson;
 	cd build.meson;
-	$MESON --prefix=$GEN_PKGRULES_PREFIX ../;
+	$MESON --prefix=$GEN_PKGRULES_PREFIX \\" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+	if [ "$CONFIGURE_OPTIONS" != "" ]; then
+$ECHO "		$CONFIGURE_OPTIONS \\" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+	fi
+$ECHO " ../;
 fi;
 " >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
 fi;
