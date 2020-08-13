@@ -253,7 +253,7 @@ gen_source_package() {
 	fi
 
 	# If package is a Perl Module then load "Makefile.PL" #
-	if test -f "$package_name-$package_version/Makefile.PL" && test ! -f "$package_name-$package_version/configure"; then
+	if test -f "$package_name-$package_version/Makefile.PL" || test -f "$package_name-$package_version/Build.PL" && test ! -f "$package_name-$package_version/configure"; then
 		### Start for each 'package_to_generate' create '@PACKAGE' source files ###
 		start_spinner "Running '${color_wht}Makefile.PL${color_reset}' attempting to create '${color_wht}Makefile${color_reset}'";
 		echolog_debug_verbose "$DEBUG Found '$package_name-$package_version' '${TEMP_MAKEFILE}.PL' script!";
@@ -261,7 +261,15 @@ gen_source_package() {
 		$CD $GENETIC_TMP/$package_name-$package_version/$package_name-$package_version;
 
     		# Makefile.PL #
-    		$PERL Makefile.PL &> ../$package_name.src-Makefile.PL-$BUILDLOG;
+				if test -f "Makefile.PL"; then
+					$PERL Makefile.PL $CONFIGURE_OPTIONS &> ../$package_name.src-Makefile.PL-$BUILDLOG;
+				fi
+
+    		# Build.PL #
+				if test -f "Build.PL"; then
+					$PERL Build.PL $CONFIGURE_OPTIONS &> ../$package_name.src-Build.PL-$BUILDLOG;
+				fi
+
 		stop_spinner $?;
 		
 		TEMP_MAKEFILE="$GENETIC_TMP/$package_name-$package_version/$package_name-$package_version/Makefile";
@@ -440,7 +448,17 @@ if test -f "${TEMP_MAKEFILE}.PL"; then
   $ECHO "# Makefile.PL #
 if test -f \"Makefile.PL\"; then
 	echo \" --- Configure <\$name (\$version)> ---\";
-	$PERL Makefile.PL;
+	$PERL Makefile.PL $CONFIGURE_OPTIONS;
+fi;
+" >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
+fi;
+
+# PERL Build.PL
+if test -f "Build.PL"; then
+  $ECHO "# Build.PL #
+if test -f \"Build.PL\"; then
+	echo \" --- Configure <\$name (\$version)> ---\";
+	$PERL Build.PL $CONFIGURE_OPTIONS;
 fi;
 " >> $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Rules
 fi;
@@ -533,7 +551,7 @@ category=
 depends=
 installbefore=
 installafter=
-replaces=\"$package_name $package_name.dbg\"
+replaces=$package_name
 " > $GENETIC_TMP/$package_name-$package_version/$package_to_generate/Info;
 		### End '$package_name' 'Info' file ###
 

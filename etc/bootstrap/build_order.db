@@ -592,7 +592,7 @@
 #libmbim:libmbim
 #libqmi:libqmi
 #ModemManager:ModemManager
-#wpa_supplicant:wpa_supplicant
+#wpa-supplicant:wpa-supplicant
 #NetworkManager:NetworkManager
 #libproxy:libproxy
 #neon:neon
@@ -646,6 +646,7 @@
 #cups-filters:cups-filters
 #enscript:enscript
 #libmicrohttpd:libmicrohttpd
+#bat:bat
 ##### SOUND #
 #taglib:taglib
 #alsa-lib:alsa-lib
@@ -1066,22 +1067,43 @@
 #### EMULATORS #
 #freealut:freealut
 #tinyxml:tinyxml
+#SDL2-mixer:SDL2-mixer
+#SDL-mixer:SDL-mixer
+#GUIlib:GUIlib
+####SDL2-net:SDL2-net
+#SDL-Pango:SDL-Pango
+#####SDL-Perl:SDL-Perl
 #dosbox:dosbox
 #scummvm:scummvm
 #RetroArch:RetroArch
 #### GAMES ###
+#loki:loki
+#glfw:glfw
+#ode:ode
+#cegui:cegui
+#OpenSceneGraph:OpenSceneGraph
 #minetest:minetest
 #libgd:libgd
 #leveldb:leveldb
 #minetestmapper:minetestmapper
 #ioq3:ioq3
 #astromenace:astromenace
-#loki:loki
-#glfw:glfw
-#ode:ode
-#OpenSceneGraph:OpenSceneGraph
-#cegui:cegui
-#zeroballistics:zeroballistics
+#dreamchess:dreamchess
+#Powermanga:Powermanga
+#perl-gettext:perl-gettext
+#File-Which:File-Which
+#File-Sharedir:File-Sharedir
+#Class-Inspector:Class-Inspector
+#Archive-Extract:Archive-Extract
+#Text-Diff:Text-Diff
+#Text-Patch:Text-Patch
+#Capture-Tiny:Capture-Tiny
+#Module-Build:Module-Build
+#Archive-Zip:Archive-Zip
+####Alien-SDL:Alien-SDL
+####perl-SDL:perl-SDL
+####frozen-bubble:frozen-bubble
+####zeroballistics:zeroballistics
 #### JUPYTER ###
 #pyparsing:pyparsing
 #cycler:cycler

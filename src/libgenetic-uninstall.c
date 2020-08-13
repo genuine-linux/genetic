@@ -65,15 +65,19 @@ gen_uninstall_packages() {
       if test "$INSTDIR" == "/"; then unset INSTDIR; fi;
 
       ### REMOVE INSTALLED FILES & LINKS ###
-      echolog_debug "$DEBUG Removing installed package '$package_name $Version' files.";
-      for installed_file in $($CAT $CACHEDIR/$package_name/$Package.files); do
-        check_file "${INSTDIR}${installed_file}" "$RM -f ${INSTDIR}$installed_file";
-      done;
+      if test -f "$CACHEDIR/$package_name/$Package.files"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' files.";
+        for installed_file in $($CAT $CACHEDIR/$package_name/$Package.files); do
+          check_file "${INSTDIR}${installed_file}" "$RM -f ${INSTDIR}$installed_file";
+        done;
+      fi;
 
-      echolog_debug "$DEBUG Removing installed package '$package_name $Version' links.";
-      for installed_link in $($CAT $CACHEDIR/$package_name/$Package.links); do
-        check_link "${INSTDIR}${installed_link}" "$RM -f ${INSTDIR}${installed_link}";
-      done;
+      if test -f "$CACHEDIR/$package_name/$Package.links"; then
+        echolog_debug "$DEBUG Removing installed package '$package_name $Version' links.";
+        for installed_link in $($CAT $CACHEDIR/$package_name/$Package.links); do
+          check_link "${INSTDIR}${installed_link}" "$RM -f ${INSTDIR}${installed_link}";
+        done;
+      fi;
       
       if test -f "$CACHEDIR/$package_name/$Package.lib.files"; then
         echolog_debug "$DEBUG Removing installed package '$package_name $Version' library files.";
