@@ -1,9 +1,9 @@
 CLEANFILES = \
-	arch.conf  build.conf  db.conf  editor.conf  installer.conf  log.conf  release.conf  repos.conf *~
+	arch.conf  build.conf  db.conf  editor.conf  installer.conf  installer-live.conf log.conf  release.conf  repos.conf *~
 
 confddir = $(sysconfdir)/@PACKAGE@/conf.d
 confd_DATA = \
-	arch.conf  build.conf  db.conf  editor.conf  installer.conf  log.conf  release.conf  repos.conf
+	arch.conf  build.conf  db.conf  editor.conf  installer.conf installer-live.conf log.conf  release.conf  repos.conf
 
 do_subst = sed -e 's,[@]sharedstatedir[@],$(sharedstatedir),g' \
 	-e 's,[@]localstatedir[@],$(localstatedir),g' \
@@ -41,8 +41,11 @@ build.conf: build.conf.in Makefile
 installer.conf: installer.conf.in Makefile
 	$(do_subst) < $(srcdir)/installer.conf.in > installer.conf;
 
+installer-live.conf: installer-live.conf.in Makefile
+	$(do_subst) < $(srcdir)/installer-live.conf.in > installer-live.conf;
+
 repos.conf: repos.conf.in Makefile
 	$(do_subst) < $(srcdir)/repos.conf.in > repos.conf;
 
 all-local: \
-	arch.conf  build.conf  db.conf  editor.conf  installer.conf  log.conf  release.conf  repos.conf
+	arch.conf  build.conf  db.conf  editor.conf  installer.conf installer-live.conf log.conf  release.conf  repos.conf

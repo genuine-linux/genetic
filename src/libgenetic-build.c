@@ -491,15 +491,15 @@ done
 
 	# Index of package library files ### (lib) ###
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library files in '$name.lib.files' ...";
-	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' >../$name.lib.files;
+	$FIND . -type f | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' | $GREP -v '/usr/include/' >../$name.lib.files;
 
 	# Index of package library links #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library links in '$name.lib.links' ...";
-	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' > ../$name.lib.links;
+	$FIND . -type l | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib/' | $GREP -v '\.la$' | $GREP -v '\.a$' | $GREP -v '/usr/include/' > ../$name.lib.links;
 
 	# Index of package library dirs #
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed library directories in '$name.lib.dirs' ...";
-	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib' > ../$name.lib.dirs;
+	$FIND . -type d | $SED 's/^\.//g' | $AWK '{if ($0!="") print $0}' | $GREP '/lib' | $GREP -v '/usr/include' > ../$name.lib.dirs;
 
 	# Index of package sysconfig files ### (etc) ###
 	echolog_debug "$DEBUG Indexing '$name $version' <$ROOTFS> installed sysconfig files in '$name.etc.files' ...";

@@ -293,7 +293,7 @@
 #define PREFIX "/usr/"
 
 /* Define Executable Directory. */
-#define SBINDIR "/usr/sbin/"
+#define SBINDIR "NONE/sbin/"
 
 /* This is a Solaris system */
 /* #undef SOLARIS */

@@ -1,4 +1,4 @@
-### BASE SYSTEM #
+##### BASE SYSTEM #
 #genuine-base-system:genuine-base-system
 #linux:linux-headers
 #man-pages:man-pages
@@ -92,6 +92,8 @@
 #freetype:freetype
 #unifont:unifont
 #dejavu-fonts-ttf:dejavu-fonts-ttf
+#efivar:efivar
+#efibootmgr:efibootmgr
 #grub:grub
 #less:less
 #gzip:gzip
@@ -132,6 +134,7 @@
 #opentmpfiles:opentmpfiles
 #pcre:pcre
 #pcre2:pcre2
+#swig:swig
 #gcovr:gcovr
 #lcov:lcov
 #libaio:libaio
@@ -227,6 +230,7 @@
 #rsync:rsync
 #llvm:llvm
 #acpid:acpid
+#acpi-support:acpi-support
 #nasm:nasm
 #dhcpcd:dhcpcd
 #dhcp:dhcp
@@ -256,8 +260,11 @@
 #linux-firmware:linux-firmware
 #kexec-tools:kexec-tools
 #fbset:fbset
+#fbcat:fbcat
 #busybox:busybox
 #dash:dash
+#######libx86:libx86
+#######v86d:v86d
 #mkinitramfs:mkinitramfs
 #debianutils:debianutils
 #rrdtool:rrdtool
@@ -268,6 +275,7 @@
 #dosfstools:dosfstools
 #Crypt-PasswdMD5:Crypt-PasswdMD5
 #syslinux:syslinux
+#LSB-Tools:LSB-Tools
 #osinfo-db-tools:osinfo-db-tools
 ###osinfo-db:osinfo-db
 #libosinfo:libosinfo
@@ -287,6 +295,7 @@
 #unrar:unrar
 #p7zip:p7zip
 #sg3-utils:sg3-utils
+#squashfs-tools:squashfs-tools
 #### NFS#
 #tcp-wrappers:tcp-wrappers
 #libgssglue:libgssglue
@@ -299,8 +308,11 @@
 #indent:indent
 #strace:strace
 #lsof:lsof
+#isl:isl
 #ccache:ccache
 ####genkernel:genkernel
+#dracut:dracut
+#double-conversion:double-conversion
 ##### NET
 #liblinear:liblinear
 #libnl:libnl
@@ -458,7 +470,9 @@
 #font-isas-misc:font-isas-misc
 #### DBUS #
 #autoconf213:autoconf213
-#mozjs:mozjs
+#mozjs60:mozjs60
+#mozjs68:firefox-esr68
+#mozjs:firefox-esr
 #lxml:lxml
 #pax-utils:pax-utils
 #dbus:dbus
@@ -473,8 +487,12 @@
 #polkit:polkit
 #ConsoleKit2:ConsoleKit2
 #libdaemon:libdaemon
+#blocaled:blocaled
 #openrc-settingsd:openrc-settingsd
 #htop:htop
+#links:links
+#### XORG ####
+#xorg:xorg
 #### XORG KEYBOARD #
 #xkeyboard-config:xkeyboard-config
 #### XORG XSERVER #
@@ -529,6 +547,7 @@
 #apr-util:apr-util
 #httpd:httpd
 #scons:scons
+#waf:waf
 #serf:serf
 #subversion:subversion
 #git:git
@@ -581,9 +600,9 @@
 #libndp:libndp
 #upower:upower
 #qt5:qt5
-####qt5webengine:qt5webengine
 #pinentry:pinentry
 #nmap:nmap
+#whois:whois
 #dnsmasq:dnsmasq
 #jansson:jansson
 #nghttp2:nghttp2
@@ -601,6 +620,10 @@
 #rest:rest
 #libpaper:libpaper
 #colord:colord
+#snowball:snowball
+#AppStream:AppStream
+#appstream-glib:appstream-glib
+#appdata-tools:appdata-tools
 #cups:cups
 #cups-pk-helper:cups-pk-helper
 #gtk3+:gtk3+
@@ -624,6 +647,7 @@
 #plymouth:plymouth
 #plymouth-openrc-plugin:plymouth-openrc-plugin
 #adapta-gtk-theme:adapta-gtk-theme
+#colord-gtk:colord-gtk
 #### MORE 
 #GConf:GConf
 #avahi:avahi
@@ -655,10 +679,13 @@
 #libvorbis:libvorbis
 #libsndfile:libsndfile
 #id3lib:id3lib
+#libid3tag:libid3tag
+#easytag:easytag
 #fftw:fftw
 #libsamplerate:libsamplerate
 #speex:speex
 #speexdsp:speexdsp
+#WavPack:WavPack
 #libcap-pam:libcap-pam
 #ply:ply
 #bind:bind
@@ -677,7 +704,9 @@
 #alsa-oss:alsa-oss
 #audiofile:audiofile
 #libao:libao
+#lash:lash
 #vorbis-tools:vorbis-tools
+#portmidi:portmidi
 #sound-theme-freedesktop:sound-theme-freedesktop
 #### MULTIMEDIA #
 #babl:babl
@@ -685,6 +714,7 @@
 #gexiv2:gexiv2
 #libass:libass
 #fdk-aac:fdk-aac
+#opencore-amr:opencore-amr
 #lame:lame
 #libtheora:libtheora
 #libvpx:libvpx
@@ -701,6 +731,7 @@
 #libcdio:libcdio
 #libcdio-paranoia:libcdio-paranoia
 #gsl:gsl
+#twolame:twolame
 #gstreamer:gstreamer
 #cdparanoia-III:cdparanoia-III
 #gst-plugins-base:gst-plugins-base
@@ -714,6 +745,7 @@
 #libdvdnav:libdvdnav
 #soundtouch:soundtouch
 #clutter:clutter
+#clutter-gtk:clutter-gtk
 #faac:faac
 #faad2:faad2
 #libmpeg2:libmpeg2
@@ -723,17 +755,23 @@
 #xvidcore:xvidcore
 #ffmpeg:ffmpeg
 #libmad:libmad
+#ladspa-sdk:ladspa-sdk
+#cmt:cmt
+#raptor2:raptor2
+#LRDF:LRDF
 #cdrdao:cdrdao
 #cdrtools:cdrtools
 #dvd+rw-tools:dvd+rw-tools
 #xine-lib:xine-lib
 #opencv:opencv
+#sox:sox
 #gst-plugins-bad:gst-plugins-bad
 #gst-libav:gst-libav
 #gstreamer-vaapi:gstreamer-vaapi
 #libcanberra:libcanberra
 #notification-daemon:notification-daemon
 #libnotify:libnotify
+#clutter-gst:clutter-gst
 #LibRaw:LibRaw
 #libopenraw:libopenraw
 #bullet3:bullet3
@@ -750,12 +788,13 @@
 #xine-ui:xine-ui
 #ffmpegthumbnailer:ffmpegthumbnailer
 #pavucontrol:pavucontrol
-####gimp-help:gimp-help
+###gimp-help:gimp-help
 #gutenprint:gutenprint
 #transcode:transcode
 #rxvt-unicode:rxvt-unicode
 #### WEBKIT #
 #webkitgtk:webkitgtk
+#qt5webengine:qt5webengine
 ### LOGIN MANAGER #
 ### LIGHTDM #
 #keybinder:keybinder
@@ -805,6 +844,8 @@
 #XML-SAX-Expat:XML-SAX-Expat
 #docbook2X:docbook2X
 ##### ibus-table:ibus-table
+#jsoncpp:jsoncpp
+#####firefox-esr:firefox-esr
 #firefox:firefox
 #transmission:transmission
 #protobuf:protobuf
@@ -830,23 +871,106 @@
 #i3-gaps:i3-gaps
 #i3status:i3status
 #i3lock:i3lock
-##### MATE DESKTOP #
+##### GNOME DESKTOP #
 #autoconf-archive:autoconf-archive
 #dconf:dconf
 #dconf-editor:dconf-editor
-#zenity:zenity
 #libwnck:libwnck
 #gtksourceview:gtksourceview
 #gtksourceview3:gtksourceview3
 #dbus-test-runner:dbus-test-runner
 #libfakekey:libfakekey
 #gcr:gcr
-#gnome-menus:gnome-menus
-#libgee:libgee
-#bamf:bamf
-#libdbusmenu:libdbusmenu
 #libsecret:libsecret
+#libquvi-scripts:libquvi-scripts
+#libquvi:libquvi
+#luasocket:luasocket
+#quvi:quvi
+#libatasmart:libatasmart
+#volume-key:volume-key
+#libbytesize:libbytesize
+#ndctl:ndctl
+####dmraid:dmraid
+#libblockdev:libblockdev
+#udisks:udisks
+#gvfs:gvfs
+#totem-pl-parser:totem-pl-parser
+#vte:vte
+#yelp-xsl:yelp-xsl
+#geocode-glib:geocode-glib
+#gjs:gjs
+#gnome-autoar:gnome-autoar
+#bubblewrap:bubblewrap
+#gnome-desktop:gnome-desktop
+#gnome-menus:gnome-menus
+#gnome-video-effects:gnome-video-effects
+#gnome-online-accounts:gnome-online-accounts
+#grilo:grilo
+#libchamplain:libchamplain
+#libgdata:libgdata
+#libgee:libgee
+#libgtop:libgtop
+#libgweather:libgweather
+#libpeas:libpeas
+#evolution-data-server:evolution-data-server
+#python-dbusmock:python-dbusmock
+#telepathy-glib:telepathy-glib
+#tracker:tracker
+#isodate:isodate
+#rdflib:rdflib
+#zeitgeist:zeitgeist
+#folks:folks
+#gfbgraph:gfbgraph
+#tracker-miners:tracker-miners
+#gsound:gsound
+#bamf:bamf
+#gnome-backgrounds:gnome-backgrounds
+#nautilus:nautilus
+#zenity:zenity
+#libdbusmenu:libdbusmenu
+#gnome-bluetooth:gnome-bluetooth
 #gnome-keyring:gnome-keyring
+#polkit-gnome:polkit-gnome
+#geoclue:geoclue
+#gnome-settings-daemon:gnome-settings-daemon
+#libhandy:libhandy
+#mobile-broadband-provider-info:mobile-broadband-provider-info
+#libnma:libnma
+#cheese:cheese
+#gnome-control-center:gnome-control-center
+#gnome-color-manager:gnome-color-manager
+#graphene:graphene
+#mutter:mutter
+#telepathy-mission-control:telepathy-mission-control
+#gnome-shell:gnome-shell
+#gnome-shell-extensions:gnome-shell-extensions
+#gnome-session:gnome-session
+#gdm:gdm
+#gnome-user-docs:gnome-user-docs
+#yelp:yelp
+#gnome-panel:gnome-panel
+#gnome-applets:gnome-applets
+#alacarte:alacarte
+#gnome-tweaks:gnome-tweaks
+#gnome-terminal:gnome-terminal
+#gnome-contacts:gnome-contacts
+#baobab:baobab
+#exempi:exempi
+#eog:eog
+#eog-plugins:eog-plugins
+#file-roller:file-roller
+#seahorse:seahorse
+#uchardet:uchardet
+#amtk:amtk
+#tepl:tepl
+#gnome-maps:gnome-maps
+###gnome-power-manager:gnome-power-manager
+#gnome-screenshot:gnome-screenshot
+#gnome-system-monitor:gnome-system-monitor
+#gnome-weather:gnome-weather
+#gnome-nettool:gnome-nettool
+##gnome-software:gnome-software
+####### MATE DESKTOP ####
 #mate-common:mate-common
 #libmatekbd:libmatekbd
 #libmatemixer:libmatemixer
@@ -880,27 +1004,16 @@
 #mate-media:mate-media
 #mate-netbook:mate-netbook
 #mate-menu:mate-menu
-#vte:vte
 #mate-terminal:mate-terminal
 #mate-screensaver:mate-screensaver
-#libgtop:libgtop
 #mate-system-monitor:mate-system-monitor
 #mate-sensors-applet:mate-sensors-applet
 #mate-user-guide:mate-user-guide
-#libatasmart:libatasmart
-#volume-key:volume-key
-#libbytesize:libbytesize
-#ndctl:ndctl
-####dmraid:dmraid
-#libblockdev:libblockdev
-#udisks:udisks
-#gvfs:gvfs
 #mate-utils:mate-utils
 #caja:caja
 #python-caja:python-caja
 #caja-extensions:caja-extensions
 #enchant:enchant
-#libpeas:libpeas
 #pluma:pluma
 #mozo:mozo
 #mate-calc:mate-calc
@@ -925,6 +1038,7 @@
 #emerald-themes:emerald-themes
 #compiz-manager:compiz-manager
 #plank:plank
+#gnome-flashback:gnome-flashback
 ###### DESKTOP APPS #
 #dmenu:dmenu
 #arandr:arandr
@@ -958,6 +1072,10 @@
 #arc-icon-theme:arc-icon-theme
 ##### PAINT #
 #mypaint:mypaint
+#gnome-paint:gnome-paint
+#drawing:drawing
+#dia:dia
+#fbida:fbida
 ##### 3D MODELING #
 #ilmbase:ilmbase
 #openexr:openexr
@@ -966,6 +1084,8 @@
 #oneTBB:oneTBB
 #blender:blender
 #irrlicht:irrlicht
+#####libg3d:libg3d
+#####g3dviewer:g3dviewer
 ##### SOCIAL #
 #libnet:libnet
 #GeoIP:GeoIP
@@ -974,15 +1094,28 @@
 #irssi-scripts:irssi-scripts
 #hexchat:hexchat
 #libnice:libnice
+#sofia-sip:sofia-sip
 #farstream:farstream
-###meanwhile:meanwhile
+#telepathy-farstream:telepathy-farstream
+#telepathy-logger:telepathy-logger
+#telepathy-idle:telepathy-idle
+#telepathy-gabble:telepathy-gabble
+#telepathy-haze:telepathy-haze
+#telepathy-rakia:telepathy-rakia
+#libaccounts-glib:libaccounts-glib
+#meanwhile:meanwhile
 #pidgin:pidgin
+#empathy:empathy
 #### OFFICE ####
 #aspell:aspell
 #aspell6-en:aspell6-en
 #aspell6-es:aspell6-es
 #aspell6-ca:aspell6-ca
 #hunspell:hunspell
+#gspell:gspell
+#gucharmap:gucharmap
+#gedit:gedit
+#gedit-plugins:gedit-plugins
 #gamin:gamin
 #libreoffice:libreoffice
 ###### DEVEL ###
@@ -996,7 +1129,7 @@
 #### CONTAINERS ####
 #docker:docker
 #x11docker:x11docker
-## AUTOMATION #
+#### AUTOMATION #
 #argcomplete:argcomplete
 #Jinja2:Jinja2
 #PyYAML:PyYAML
@@ -1006,8 +1139,11 @@
 #vsftpd:vsftpd
 #ettercap:ettercap
 #wireshark:wireshark
+#### LDAP ####
 #openldap:openldap
 #samba:samba
+##### MAIL ####
+#evolution:evolution
 #####mate-user-share:mate-user-share
 ##### VIRTUALIZATION #
 #spice-protocol:spice-protocol
@@ -1064,19 +1200,23 @@
 #### COCKPIT #
 ##pcp:pcp
 ### cockpit:cockpit # requires systemd
-#### EMULATORS #
+#### GAMES & EMULATORS #
 #freealut:freealut
 #tinyxml:tinyxml
 #SDL2-mixer:SDL2-mixer
 #SDL-mixer:SDL-mixer
+#SDL2-ttf:SDL2-ttf
+#SDL-ttf:SDL-ttf
 #GUIlib:GUIlib
+#SDL-sound:SDL-sound
+#SDL-net:SDL-net
 ####SDL2-net:SDL2-net
 #SDL-Pango:SDL-Pango
 #####SDL-Perl:SDL-Perl
+####Alien-SDL:Alien-SDL
+####perl-SDL:perl-SDL
 #dosbox:dosbox
 #scummvm:scummvm
-#RetroArch:RetroArch
-#### GAMES ###
 #loki:loki
 #glfw:glfw
 #ode:ode
@@ -1100,10 +1240,38 @@
 #Capture-Tiny:Capture-Tiny
 #Module-Build:Module-Build
 #Archive-Zip:Archive-Zip
-####Alien-SDL:Alien-SDL
-####perl-SDL:perl-SDL
+#RetroArch:RetroArch
+#lbreakouthd:lbreakouthd
+#bzflag:bzflag
+#pingus:pingus
+#armagetronad:armagetronad
+####armagetronad-server:armagetronad-server
+#CriticalMass:CriticalMass
+#etw:etw
+#gltron:gltron
+#gtkboard:gtkboard
+#gtkpool:gtkpool
+#gtkatlantic:gtkatlantic
+#neverball:neverball
+#scid:scid
+#Scorched3D:Scorched3D
+#BillardGL:BillardGL
+#openclonk:openclonk
+#flare:flare
+#flare-game:flare-game
+#foobilladplus:foobillardplus
+#cowsay:cowsay
+#recode:recode
+#fortune-mod:fortune-mod
+#fortunes-es:fortunes-es
+#sdl-ball:sdl-ball
+#phlipple:phlipple
+#barrage:barrage
+#berusky2:berusky2
+#####opencity:opencity
 ####frozen-bubble:frozen-bubble
 ####zeroballistics:zeroballistics
+#boinc:boinc
 #### JUPYTER ###
 #pyparsing:pyparsing
 #cycler:cycler
@@ -1159,6 +1327,71 @@
 #astunparse:astunparse
 #backports-weakref:backports-weakref
 #oocairo:oocairo
+#### WWW ####
+#php:php
+#### SYSTEM UTILS ####
+#yaml-cpp:yaml-cpp
+#kpmcore:kpmcore
+#calamares:calamares
+##### AUDIO & SOUND ####
+#qjackctl:qjackctl
+#rakarrack:rakarrack
+#audiotools:audiotools
+#jack-capture:jack-capture
+#####robofab:robofab
+#roboto:roboto
+#####lilypond:lilypond
+#lv2:lv2
+#serd:serd
+#sord:sord
+#sratom:sratom
+#lilv:lilv
+#zita-convolver:zita-convolver
+#zita-resampler:zita-resampler
+#mypy-extensions:mypy-extensions
+#natsort:natsort
+#croniter:croniter
+#multidict:multidict
+#yarl:yarl
+#venusian:venusian
+#terminaltables:terminaltables
+#opentracing:opentracing
+#colorlog:colorlog
+#mode:mode
+#colorclass:colorclass
+#click:click
+#kafka-python:kafka-python
+#robinhood-aiokafka:robinhood-aiokafka
+#async-timeout:async-timeout
+#aiohttp:aiohttp
+#aiohttp-cors:aiohttp-cors
+#faust:faust
+#cloog:cloog
+#ppl:ppl
+#cloog-parma:cloog-parma
+#gjacktransport:gjacktransport
+#vamp-plugin-sdk:vamp-plugin-sdk
+#UAVampPlugins:UAVampPlugins
+#liblo:liblo
+#eigen:eigen
+#dssi:dssi
+#rosegarden:rosegarden
+#MuseScore:MuseScore
+#guitarix2:guitarix2
+#rubberband:rubberband
+#aubio:aubio
+#csound:csound
+#Ardour:Ardour
+#hydrogen:hydrogen
+#hydrogen-drumkits:hydrogen-drumkits
+#gogglesmm:gogglesmm
+#sooperlooper:sooperlooper
+#mxml:mxml
+#zynaddsubfx:zynaddsubfx
+####audacity:audacity
+######jna:jna
+####apache-maven:apache-maven
+#####tuxguitar:tuxguitar
 #######
 # END #
 ######

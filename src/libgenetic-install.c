@@ -862,7 +862,7 @@ gen_install_binary_package() {
 
     # Check files in '$Package.etc.files' index #
     #for file in $($CAT $Package.etc.files | sed 's/[ \(\)]/\\&/g'); do
-    $CAT $Package.etc.files | sed 's/[ \(\)]/\\&/g' | while read file; do
+    $CAT $Package.etc.files | $SED 's/[ \(\)]/\\&/g' | $SED 's/ /\\ /g' | while read file; do
       if test ! -f "${INSTDIR}$file"; then
         echolog_debug "$DEBUG Creating '$Package $Version' ($Arch) sysconfig file '${INSTDIR}$file'.";
         $CP -a .$file ${INSTDIR}$file &>/dev/null;

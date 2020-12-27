@@ -1,0 +1,16 @@
+cjs:cjs
+xapp:xapp
+python3-xapp:python3-xapp
+mint-themes:mint-themes
+cinnamon-desktop:cinnamon-desktop
+cinnamon-session:cinnamon-session
+cinnamon-control-center:cinnamon-control-center
+cinnamon-settings-daemon:cinnamon-settings-daemon
+cinnamon-menus:cinnamon-menus
+cinnamon-translations:cinnamon-translations
+muffin:muffin
+nemo:nemo
+nemo-extensions:nemo-extensions
+slick-greeter:slick-greeter
+cinnamon-screensaver:cinnamon-screensaver
+cinnamon:cinnamon

@@ -2,8 +2,6 @@
 #lmdb:lmdb
 #polkit-qt:polkit-qt
 #libdbusmenu-qt:libdbusmenu-qt
-#snowball:snowball
-#AppStream:AppStream
 #extra-cmake-modules:extra-cmake-modules
 #phonon:phonon
 #phonon-backend-vlc:phonon-backend-vlc
